@@ -27,7 +27,7 @@ public class BookmarkRepositoryTest {
     BookmarkRepository bookmarkRepository;
 
     @Before
-    public void setup(){
+    public void setup() {
         bookmarkRepository.deleteAll();
     }
 
@@ -45,7 +45,8 @@ public class BookmarkRepositoryTest {
         final List<Bookmark> petersBookmarks = bookmarkRepository.findByOwner("peter");
         assertThat(petersBookmarks).isNotNull().hasSize(1);
         final Bookmark bookmark1 = petersBookmarks.get(0);
-        assertThat(bookmark1).isEqualTo(bookmark);
+        assertThat(bookmark.getId()).isEqualTo(bookmark1.getId());
+        assertThat(bookmark.getTitle()).isEqualTo(bookmark1.getTitle());
     }
 
     @Test
@@ -53,14 +54,14 @@ public class BookmarkRepositoryTest {
         Bookmark bookmark1 = aBookmark()
                 .withOwner("peter")
                 .withUrl("https://www.sothawo.com")
-                .withDescription("this is the first entry")
+                .withTitle("this is the first entry")
                 .withTags(Arrays.asList("cool", "important"))
                 .build();
 
         Bookmark bookmark2 = aBookmark()
                 .withOwner("peter")
                 .withUrl("https://www.sothawo.com")
-                .withDescription("this is the first entry")
+                .withTitle("this is the second entry")
                 .withTags(Arrays.asList("it rocks", "mj"))
                 .build();
 
@@ -69,6 +70,7 @@ public class BookmarkRepositoryTest {
         final List<Bookmark> petersBookmarks = bookmarkRepository.findByOwner("peter");
         assertThat(petersBookmarks).isNotNull().hasSize(1);
         final Bookmark bookmark = petersBookmarks.get(0);
-        assertThat(bookmark).isEqualTo(bookmark2);
+        assertThat(bookmark.getId()).isEqualTo(bookmark2.getId());
+        assertThat(bookmark.getTitle()).isEqualTo(bookmark2.getTitle());
     }
 }

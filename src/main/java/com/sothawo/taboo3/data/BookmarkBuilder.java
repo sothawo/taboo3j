@@ -4,15 +4,16 @@
 package com.sothawo.taboo3.data;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 public final class BookmarkBuilder {
     private String owner;
-    private String url;
-    private String description;
-    private Collection<String> tags;
+    private String url = "";
+    private String title = "";
+    private  Collection<String> tags = new HashSet<>();
 
     private BookmarkBuilder() {
     }
@@ -31,22 +32,23 @@ public final class BookmarkBuilder {
         return this;
     }
 
-    public BookmarkBuilder withDescription(String description) {
-        this.description = description;
+    public BookmarkBuilder withTitle(String title) {
+        this.title = title;
         return this;
     }
 
     public BookmarkBuilder withTags(Collection<String> tags) {
-        this.tags = tags;
+        this.tags.addAll(tags);
         return this;
     }
 
     public Bookmark build() {
         Bookmark bookmark = new Bookmark();
+        bookmark.setId(owner + '-' + url);
         bookmark.setOwner(owner);
         bookmark.setUrl(url);
-        bookmark.setDescription(description);
-        bookmark.setTags(tags);
+        bookmark.setTitle(title);
+        tags.forEach(bookmark::addTag);
         return bookmark;
     }
 }
