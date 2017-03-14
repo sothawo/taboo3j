@@ -3,14 +3,61 @@
  */
 package com.sothawo.taboo3.data;
 
+import org.jetbrains.annotations.NotNull;
 
-import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
-
+import java.util.Collection;
 import java.util.List;
 
 /**
+ * interface defining the bookmark repository operations.
+ *
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-public interface BookmarkRepository extends ElasticsearchCrudRepository<Bookmark, String> {
-    List<Bookmark> findByOwner(String owner);
+public interface BookmarkRepository {
+    /**
+     * delete all entries from the repository.
+     */
+    void deleteAll();
+
+    /**
+     * save a bookmark.
+     *
+     * @param bookmark
+     *         the bookmark to save
+     */
+    void save(@NotNull Bookmark bookmark);
+
+    /**
+     * save bookmarks.
+     *
+     * @param bookmarks
+     *         the bookmarks to save
+     */
+    void save(@NotNull Iterable<Bookmark> bookmarks);
+
+    /**
+     * returns all bookmarks.
+     *
+     * @return collection of bookmarks
+     */
+    @NotNull
+    Collection<Bookmark> findAll();
+
+    /**
+     * gets all the tags from the repository.
+     *
+     * @return collection of tags
+     */
+    @NotNull
+    Collection<String> findAllTags();
+
+    /**
+     * gets al bookmarks for a given owner.
+     *
+     * @param owner
+     *         the owner
+     * @return the bookmarks for the owner
+     */
+    @NotNull
+    List<Bookmark> findByOwner(@NotNull String owner);
 }
