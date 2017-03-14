@@ -1,12 +1,11 @@
 package com.sothawo.taboo3.data;
 
-import com.sothawo.taboo3.Taboo3jApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = Taboo3jApplication.class)
+@SpringBootTest
 @DirtiesContext
 public class BookmarkRepositoryTest {
 
@@ -30,6 +29,7 @@ public class BookmarkRepositoryTest {
     public void setup() {
         bookmarkRepository.deleteAll();
     }
+
 
     @Test
     public void insertAndRetrieve() throws Exception {
@@ -72,5 +72,32 @@ public class BookmarkRepositoryTest {
         final Bookmark bookmark = petersBookmarks.get(0);
         assertThat(bookmark.getId()).isEqualTo(bookmark2.getId());
         assertThat(bookmark.getTitle()).isEqualTo(bookmark2.getTitle());
+    }
+
+    @Test
+    public void sameUrlDifferentOwner() throws Exception {
+        Bookmark bookmark1 = aBookmark()
+                .withOwner("peter")
+                .withUrl("https://www.sothawo.com")
+                .withTitle("this is the first entry")
+                .withTags(Arrays.asList("cool", "important"))
+                .build();
+
+        Bookmark bookmark2 = aBookmark()
+                .withOwner("other")
+                .withUrl("https://www.sothawo.com")
+                .withTitle("this is the first entry")
+                .withTags(Arrays.asList("cool", "important"))
+                .build();
+
+        bookmarkRepository.save(Arrays.asList(bookmark1, bookmark2));
+
+        final List<Bookmark> petersBookmarks = bookmarkRepository.findByOwner("peter");
+        assertThat(petersBookmarks).isNotNull().hasSize(1);
+        assertThat(petersBookmarks.get(0)).isEqualTo(bookmark1);
+
+        final List<Bookmark> otherBookmarks = bookmarkRepository.findByOwner("other");
+        assertThat(otherBookmarks).isNotNull().hasSize(1);
+        assertThat(petersBookmarks.get(0)).isEqualTo(bookmark1);
     }
 }
