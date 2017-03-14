@@ -92,12 +92,7 @@ public class BookmarkRepositoryTest {
 
         bookmarkRepository.save(Arrays.asList(bookmark1, bookmark2));
 
-        final List<Bookmark> petersBookmarks = bookmarkRepository.findByOwner("peter");
-        assertThat(petersBookmarks).isNotNull().hasSize(1);
-        assertThat(petersBookmarks.get(0)).isEqualTo(bookmark1);
-
-        final List<Bookmark> otherBookmarks = bookmarkRepository.findByOwner("other");
-        assertThat(otherBookmarks).isNotNull().hasSize(1);
-        assertThat(petersBookmarks.get(0)).isEqualTo(bookmark1);
+        assertThat(bookmarkRepository.findByOwner("peter")).containsOnly(bookmark1);
+        assertThat(bookmarkRepository.findByOwner("other")).containsOnly(bookmark2);
     }
 }
