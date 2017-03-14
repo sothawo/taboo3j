@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * The bookmark POJO. Tags when added are converted to lowercase and duplicate tags are removed. The Id is built by
  * concatenating the owner and the url.
@@ -22,6 +24,8 @@ import java.util.Objects;
 @Document(indexName = "bookmarks")
 public final class Bookmark {
 
+    /** the tags of the bookmark. */
+    private final Collection<String> tags = new HashSet<>();
     /** the id. */
     @Id
     private String id;
@@ -31,14 +35,15 @@ public final class Bookmark {
     private String url = "";
     /** the title of a bookmark. */
     private String title = "";
-    /** the tags of the bookmark. */
-    private final Collection<String> tags = new HashSet<>();
+
+    Bookmark() {
+    }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    void setId(String id) {
         this.id = id;
     }
 
@@ -47,7 +52,7 @@ public final class Bookmark {
     }
 
     public void setOwner(String owner) {
-        this.owner = owner;
+        this.owner = requireNonNull(owner).toLowerCase();
     }
 
     public String getUrl() {
@@ -55,7 +60,7 @@ public final class Bookmark {
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.url = requireNonNull(url);
     }
 
     public String getTitle() {
@@ -64,6 +69,25 @@ public final class Bookmark {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    void buildId() {
+        this.id = ((null == owner) ? "(null)" : owner.toLowerCase())
+                + '-'
+                + ((null == url) ? "(null)" : url);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bookmark bookmark = (Bookmark) o;
+        return Objects.equals(id, bookmark.id);
     }
 
     /**
@@ -75,7 +99,7 @@ public final class Bookmark {
      *         when tag is null
      */
     public void addTag(final String tag) {
-        tags.add(Objects.requireNonNull(tag).toLowerCase());
+        tags.add(requireNonNull(tag).toLowerCase());
     }
 
     /**

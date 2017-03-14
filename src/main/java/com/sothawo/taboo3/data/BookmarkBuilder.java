@@ -42,11 +42,18 @@ public final class BookmarkBuilder {
         return this;
     }
 
+    public BookmarkBuilder addTag(String tag) {
+        if (null != tag) {
+            this.tags.add(tag);
+        }
+        return this;
+    }
+
     public Bookmark build() {
         Bookmark bookmark = new Bookmark();
-        bookmark.setId(owner + '-' + url);
         bookmark.setOwner(owner);
         bookmark.setUrl(url);
+        bookmark.buildId();
         bookmark.setTitle(title);
         tags.forEach(bookmark::addTag);
         return bookmark;
