@@ -9,7 +9,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -47,11 +46,19 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
 
     @Override
     public void save(@NotNull Iterable<Bookmark> bookmarks) {
-        bookmarkElasticRepository.save(bookmarks);
+        // check that none exists
+        bookmarks.forEach(bookmark -> {
+            final Bookmark existing = bookmarkElasticRepository.findOne(bookmark.getId());
+            if (null != existing) {
+                throw new AlreadyExistsException(bookmark.getId());
+            }
+            bookmarkElasticRepository.save(bookmark);
+        });
     }
 
     @NotNull
     @Override
+
     public Collection<Bookmark> findAll() {
         return StreamSupport.stream(bookmarkElasticRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
@@ -66,7 +73,22 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
 
     @Override
     @NotNull
-    public List<Bookmark> findByOwner(@NotNull String owner) {
+    public Collection<Bookmark> findByOwner(@NotNull String owner) {
         return bookmarkElasticRepository.findByOwner(owner);
+    }
+
+    @Override
+    public void deleteBookmark(@NotNull Bookmark bookmark) {
+        if (null == bookmarkElasticRepository.findOne(bookmark.getId())) {
+            throw new NotFoundException(bookmark.getId());
+        }
+        bookmarkElasticRepository.delete(bookmark);
+    }
+
+    @NotNull
+    @Override
+    public Collection<String> findAllTagsByOwner(@NotNull String owner) {
+        return StreamSupport.stream(bookmarkElasticRepository.findByOwner(owner).spliterator(), false)
+                .map(Bookmark::getTags).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 }

@@ -11,8 +11,8 @@ import java.util.HashSet;
  */
 public final class BookmarkBuilder {
     private String owner;
-    private String url = "";
-    private String title = "";
+    private String url;
+    private String title;
     private  Collection<String> tags = new HashSet<>();
 
     private BookmarkBuilder() {

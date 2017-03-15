@@ -59,5 +59,23 @@ public interface BookmarkRepository {
      * @return the bookmarks for the owner
      */
     @NotNull
-    List<Bookmark> findByOwner(@NotNull String owner);
+    Collection<Bookmark> findByOwner(@NotNull String owner);
+
+    /**
+     * deletes a bookmark.
+     *
+     * @param bookmark
+     *         the bookmark to delete
+     */
+    void deleteBookmark(@NotNull Bookmark bookmark);
+
+    /**
+     * find all tags for a specific owner.
+     *
+     * @param owner
+     *         the owner
+     * @return the tags
+     */
+    @NotNull
+    Collection<String> findAllTagsByOwner(@NotNull String owner);
 }

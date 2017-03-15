@@ -52,7 +52,10 @@ public final class Bookmark {
     }
 
     public void setOwner(String owner) {
-        this.owner = requireNonNull(owner).toLowerCase();
+        if (null == owner) {
+            throw new IllegalArgumentException("owner must not be null");
+        }
+        this.owner = owner.toLowerCase();
     }
 
     public String getUrl() {
@@ -60,7 +63,10 @@ public final class Bookmark {
     }
 
     public void setUrl(String url) {
-        this.url = requireNonNull(url);
+        if (null == url) {
+            throw new IllegalArgumentException("url must not be null");
+        }
+        this.url = url;
     }
 
     public String getTitle() {
