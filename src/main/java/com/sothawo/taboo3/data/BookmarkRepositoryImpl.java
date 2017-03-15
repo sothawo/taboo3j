@@ -60,7 +60,8 @@ public class BookmarkRepositoryImpl implements BookmarkRepository {
     @NotNull
     @Override
     public Collection<String> findAllTags() {
-        return findAll().stream().map(Bookmark::getTags).flatMap(Collection::stream).collect(Collectors.toSet());
+        return StreamSupport.stream(bookmarkElasticRepository.findAll().spliterator(), false).map(Bookmark::getTags)
+                .flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
     @Override
