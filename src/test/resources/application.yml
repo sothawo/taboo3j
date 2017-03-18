@@ -8,8 +8,7 @@ security:
 spring:
   data:
     elasticsearch:
-      cluster-name: "taboo3"
+      cluster-name: "taboo3-test"
       properties:
         path:
           data: "tmpdata/elastic"
-

@@ -4,6 +4,7 @@
 package com.sothawo.taboo3.data;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author P.J. Meisch (pj.meisch@sothawo.com)
@@ -11,8 +12,8 @@ import java.util.Collection;
 public final class BookmarkBuilder {
     private String owner;
     private String url;
-    private String description;
-    private Collection<String> tags;
+    private String title;
+    private  Collection<String> tags = new HashSet<>();
 
     private BookmarkBuilder() {
     }
@@ -31,13 +32,20 @@ public final class BookmarkBuilder {
         return this;
     }
 
-    public BookmarkBuilder withDescription(String description) {
-        this.description = description;
+    public BookmarkBuilder withTitle(String title) {
+        this.title = title;
         return this;
     }
 
     public BookmarkBuilder withTags(Collection<String> tags) {
-        this.tags = tags;
+        this.tags.addAll(tags);
+        return this;
+    }
+
+    public BookmarkBuilder addTag(String tag) {
+        if (null != tag) {
+            this.tags.add(tag);
+        }
         return this;
     }
 
@@ -45,8 +53,9 @@ public final class BookmarkBuilder {
         Bookmark bookmark = new Bookmark();
         bookmark.setOwner(owner);
         bookmark.setUrl(url);
-        bookmark.setDescription(description);
-        bookmark.setTags(tags);
+        bookmark.buildId();
+        bookmark.setTitle(title);
+        tags.forEach(bookmark::addTag);
         return bookmark;
     }
 }

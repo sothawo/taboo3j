@@ -1,33 +1,64 @@
-/*
- * (c) Copyright 2017 sothawo
+/**
+ * Copyright (c) 2015 sothawo
+ *
+ * http://www.sothawo.com
  */
 package com.sothawo.taboo3.data;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * ElasticSearch bookmark document.
+ * The bookmark POJO. Tags when added are converted to lowercase and duplicate tags are removed. The Id is built by
+ * concatenating the owner and the url.
  *
- * @author P.J. Meisch (pj.meisch@sothawo.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com).
  */
 @Document(indexName = "bookmarks")
-public class Bookmark {
+public final class Bookmark {
+
+    /** the tags of the bookmark. */
+    private final Collection<String> tags = new HashSet<>();
+    /** the id. */
     @Id
-    private String url;
+    private String id;
+    /** the owner of the bookmark. */
     private String owner;
-    private String description;
-    private Collection<String> tags;
+    /** the URL the bookmark points to as String. */
+    private String url = "";
+    /** the title of a bookmark. */
+    private String title = "";
+
+    Bookmark() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    void setId(String id) {
+        this.id = id;
+    }
 
     public String getOwner() {
         return owner;
     }
 
     public void setOwner(String owner) {
-        this.owner = owner;
+        if (null == owner) {
+            throw new IllegalArgumentException("owner must not be null");
+        }
+        this.owner = owner.toLowerCase();
+        buildId();
     }
 
     public String getUrl() {
@@ -35,23 +66,30 @@ public class Bookmark {
     }
 
     public void setUrl(String url) {
+        if (null == url) {
+            throw new IllegalArgumentException("url must not be null");
+        }
         this.url = url;
+        buildId();
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitle() {
+        return title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Collection<String> getTags() {
-        return tags;
+    void buildId() {
+        this.id = ((null == owner) ? "(null)" : owner.toLowerCase())
+                + '-'
+                + ((null == url) ? "(null)" : url);
     }
 
-    public void setTags(Collection<String> tags) {
-        this.tags = tags;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
@@ -59,14 +97,45 @@ public class Bookmark {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bookmark bookmark = (Bookmark) o;
-        return Objects.equals(url, bookmark.url) &&
-                Objects.equals(owner, bookmark.owner) &&
-                Objects.equals(description, bookmark.description) &&
-                Objects.equals(tags, bookmark.tags);
+        return Objects.equals(id, bookmark.id);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(url, owner, description, tags);
+    public String toString() {
+        return "Bookmark{" +
+                "id='" + id + '\'' +
+                ", owner='" + owner + '\'' +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
+
+    /**
+     * adds the given tag in lowercase to the internal collection, if it is not already present.
+     *
+     * @param tag
+     *         new tag
+     * @throws NullPointerException
+     *         when tag is null
+     */
+    public void addTag(final String tag) {
+        tags.add(requireNonNull(tag).toLowerCase());
+    }
+
+    /**
+     * returns an unmodifiable view of the tags collection.
+     *
+     * @return unmodifiable collection
+     */
+    public Collection<String> getTags() {
+        return Collections.unmodifiableCollection(tags);
+    }
+
+    /**
+     * clears all tags.
+     */
+    public void clearTags() {
+        tags.clear();
     }
 }
