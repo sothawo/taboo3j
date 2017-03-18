@@ -7,6 +7,8 @@ package com.sothawo.taboo3.data;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -56,6 +58,7 @@ public final class Bookmark {
             throw new IllegalArgumentException("owner must not be null");
         }
         this.owner = owner.toLowerCase();
+        buildId();
     }
 
     public String getUrl() {
@@ -67,6 +70,7 @@ public final class Bookmark {
             throw new IllegalArgumentException("url must not be null");
         }
         this.url = url;
+        buildId();
     }
 
     public String getTitle() {
@@ -96,6 +100,17 @@ public final class Bookmark {
         return Objects.equals(id, bookmark.id);
     }
 
+    @Override
+    public String toString() {
+        return "Bookmark{" +
+                "id='" + id + '\'' +
+                ", owner='" + owner + '\'' +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
+
     /**
      * adds the given tag in lowercase to the internal collection, if it is not already present.
      *
@@ -115,5 +130,12 @@ public final class Bookmark {
      */
     public Collection<String> getTags() {
         return Collections.unmodifiableCollection(tags);
+    }
+
+    /**
+     * clears all tags.
+     */
+    public void clearTags() {
+        tags.clear();
     }
 }

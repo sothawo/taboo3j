@@ -10,7 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.Optional;
 
 import static com.sothawo.taboo3.data.BookmarkBuilder.aBookmark;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,11 +26,11 @@ import static org.assertj.core.api.Fail.fail;
 public class BookmarkRepositoryTest {
 
     @Autowired
-    BookmarkRepository repository;
+    BookmarkService bookmarkService;
 
     @Before
     public void setup() {
-        repository.deleteAll();
+        bookmarkService.deleteAll();
     }
 
 
@@ -42,31 +43,10 @@ public class BookmarkRepositoryTest {
                 .withTags(Arrays.asList("cool", "important"))
                 .build();
 
-        repository.save(bookmark);
+        bookmarkService.save(bookmark);
 
-        Collection<Bookmark> bookmarks = repository.findAll();
+        Collection<Bookmark> bookmarks = bookmarkService.findAll();
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark);
-    }
-
-    @Test(expected = AlreadyExistsException.class)
-    public void insertingWithSameIdOverwrites() throws Exception {
-        Bookmark bookmark1 = aBookmark()
-                .withOwner("peter")
-                .withUrl("https://www.sothawo.com")
-                .withTitle("this is the first entry")
-                .withTags(Arrays.asList("cool", "important"))
-                .build();
-
-        Bookmark bookmark2 = aBookmark()
-                .withOwner("peter")
-                .withUrl("https://www.sothawo.com")
-                .withTitle("this is the second entry")
-                .withTags(Arrays.asList("it rocks", "mj"))
-                .build();
-
-        repository.save(Arrays.asList(bookmark1, bookmark2));
-
-        fail("expected AlreadyExistsException");
     }
 
     @Test
@@ -85,28 +65,28 @@ public class BookmarkRepositoryTest {
                 .withTags(Arrays.asList("cool", "important"))
                 .build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2));
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
 
-        assertThat(repository.findByOwner("peter")).containsOnly(bookmark1);
-        assertThat(repository.findByOwner("other")).containsOnly(bookmark2);
+        assertThat(bookmarkService.findByOwner("peter")).containsOnly(bookmark1);
+        assertThat(bookmarkService.findByOwner("other")).containsOnly(bookmark2);
     }
 
 
     @Test
     public void initiallyEmpty() throws Exception {
-        assertThat(repository.findAll()).hasSize(0);
-        assertThat(repository.findAllTags()).hasSize(0);
+        assertThat(bookmarkService.findAll()).isEmpty();
+        assertThat(bookmarkService.findAllTags()).isEmpty();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createBookmarkWithoutUrl() throws Exception {
-        repository.save(aBookmark().withOwner("owner").withTitle("title").build());
+        bookmarkService.save(aBookmark().withOwner("owner").withTitle("title").build());
         fail("excpected IllegalArgumentException");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createBookmarkWithoutOwner() throws Exception {
-        repository.save(aBookmark().withUrl("url").withTitle("title").build());
+        bookmarkService.save(aBookmark().withUrl("url").withTitle("title").build());
         fail("excpected IllegalArgumentException");
     }
 
@@ -115,27 +95,32 @@ public class BookmarkRepositoryTest {
         Bookmark bookmark1 = aBookmark().withOwner("owner").withUrl("url1").withTitle("title1").addTag("tag1").build();
         Bookmark bookmark2 = aBookmark().withOwner("owner").withUrl("url2").withTitle("title2").addTag("tag2").build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2));
-        repository.deleteBookmark(bookmark2);
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
+        bookmarkService.deleteBookmark(bookmark2);
 
-        final Collection<Bookmark> bookmarks = repository.findAll();
+        final Collection<Bookmark> bookmarks = bookmarkService.findAll();
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void deleteNotExistingBookmark() throws Exception {
-        repository.deleteBookmark(aBookmark().withOwner("owner").withUrl("url").build());
-        fail("expected NotFoundException");
-    }
+    @Test
+    public void deleteAllBookmarkForOwner() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("title2").addTag("tag2").build();
 
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
+        bookmarkService.deleteByOwner("owner1");
+
+        final Collection<Bookmark> bookmarks = bookmarkService.findAll();
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
+    }
 
     @Test
     public void findAllBookmarks() throws Exception {
         Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").build();
         Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("title2").addTag("tag2").build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2));
-        Collection<Bookmark> bookmarks = repository.findAll();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
+        Collection<Bookmark> bookmarks = bookmarkService.findAll();
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1, bookmark2);
     }
@@ -145,8 +130,8 @@ public class BookmarkRepositoryTest {
         Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").build();
         Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("title2").addTag("tag2").build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2));
-        Collection<Bookmark> bookmarks = repository.findByOwner("owner1");
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
+        Collection<Bookmark> bookmarks = bookmarkService.findByOwner("owner1");
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
@@ -161,8 +146,8 @@ public class BookmarkRepositoryTest {
                         .build();
         Bookmark bookmark3 = aBookmark().withOwner("owner").withUrl("url3").withTitle("title3").addTag("tag3").build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
-        Collection<String> tags = repository.findAllTags();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
+        Collection<String> tags = bookmarkService.findAllTags();
 
         assertThat(tags).containsExactlyInAnyOrder("tag1", "tag2", "tag3", "common");
     }
@@ -177,152 +162,136 @@ public class BookmarkRepositoryTest {
                         .build();
         Bookmark bookmark3 = aBookmark().withOwner("owner2").withUrl("url3").withTitle("title3").addTag("tag3").build();
 
-        repository.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
-        Collection<String> tags = repository.findAllTagsByOwner("owner1");
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
+        Collection<String> tags = bookmarkService.findAllTagsByOwner("owner1");
 
         assertThat(tags).containsExactlyInAnyOrder("tag1", "tag2", "common");
     }
 
-    //############ rewrite the following tests
-/*
-    @Test
-    public void findBookmarkBySearchInTitle() throws Exception {
-        Bookmark bookmark1 = aBookmark().withUrl("url1").withTitle("Hello world").build();
-        Bookmark bookmark2 = aBookmark().withUrl("url2").withTitle("world wide web").build();
-        Bookmark bookmark3 = aBookmark().withUrl("url3").withTitle("say hello").build();
-        repository.createBookmark(bookmark1);
-        repository.createBookmark(bookmark2);
-        repository.createBookmark(bookmark3);
-
-        Collection<Bookmark> bookmarks =
-                repository.getBookmarksWithSearch("hello");
-
-        assertThat(bookmarks, hasSize(2));
-        assertThat(bookmarks, hasItems(bookmark1, bookmark3));
-    }
-
-    @Test
-    public void findBookmarksBySearchInTitleAndTags() throws Exception {
-        Bookmark bookmark1 = aBookmark().withUrl("url1").withTitle("Hello world").addTag("tag1").build();
-        Bookmark bookmark2 = aBookmark().withUrl("url2").withTitle("world wide web").addTag("tag1").addTag("tag2")
-                .build();
-        Bookmark bookmark3 = aBookmark().withUrl("url3").withTitle("say hello").addTag("tag3").build();
-        repository.createBookmark(bookmark1);
-        repository.createBookmark(bookmark2);
-        repository.createBookmark(bookmark3);
-
-        Collection<Bookmark> bookmarks =
-                repository.getBookmarksWithTagsAndSearch(Collections.singletonList("tag1"), true, "hello");
-
-        assertThat(bookmarks, hasSize(1));
-        assertThat(bookmarks, hasItems(bookmark1));
-    }
-
-    @Test
-    public void findBookmarksWithTagsAnd() throws Exception {
-        Bookmark bookmark1 = aBookmark().withUrl("url1").withTitle("title1").addTag("tag1").addTag("common").build();
-        Bookmark bookmark2 = aBookmark().withUrl("url2").withTitle("title2").addTag("tag2").addTag("common").build();
-        Bookmark bookmark3 = aBookmark().withUrl("url3").withTitle("title3").addTag("tag3").build();
-        repository.createBookmark(bookmark1);
-        repository.createBookmark(bookmark2);
-        repository.createBookmark(bookmark3);
-
-        Collection<Bookmark> bookmarks =
-                repository.getBookmarksWithTags(Arrays.asList("tag2", "common"), true);
-
-        assertThat(bookmarks, hasSize(1));
-        assertThat(bookmarks, hasItem(bookmark2));
-    }
-
-    @Test
-    public void findBookmarksWithTagsOr() throws Exception {
-        Bookmark bookmark1 = aBookmark().withUrl("url1").withTitle("title1").addTag("tag1").addTag("common").build();
-        Bookmark bookmark2 = aBookmark().withUrl("url2").withTitle("title2").addTag("tag2").addTag("common").build();
-        Bookmark bookmark3 = aBookmark().withUrl("url3").withTitle("title3").addTag("tag3").build();
-        repository.createBookmark(bookmark1);
-        repository.createBookmark(bookmark2);
-        repository.createBookmark(bookmark3);
-
-        Collection<Bookmark> bookmarks =
-                repository.getBookmarksWithTags(Arrays.asList("tag2", "common"), false);
-
-        assertThat(bookmarks, hasSize(2));
-        assertThat(bookmarks, hasItems(bookmark1, bookmark2));
-    }
-
-
-    @Test
-    public void findTagsWhenNoTagsExistYieldsEmptyList() throws Exception {
-        Bookmark bookmark = aBookmark().withUrl("url1").withTitle("title1").build();
-        repository.createBookmark(bookmark);
-
-        Collection<String> tags = repository.getAllTags();
-
-        assertThat(tags, hasSize(0));
-    }
-
     @Test
     public void updateBookmark() throws Exception {
-        Bookmark bookmark = aBookmark().withUrl("url0").withTitle("title0").addTag("tag0").build();
+        Bookmark bookmark = aBookmark().withOwner("owner").withUrl("url0").withTitle("title0").addTag("tag0").build();
 
-        bookmark = repository.createBookmark(bookmark);
-        bookmark.setUrl("url1");
+        bookmarkService.save(bookmark);
         bookmark.setTitle("title1");
         bookmark.clearTags();
         bookmark.addTag("tag1");
         String id = bookmark.getId();
 
-        repository.updateBookmark(bookmark);
-        bookmark = repository.getBookmarkById(id);
+        bookmarkService.save(bookmark);
+        Optional<Bookmark> bookmarkOpt = bookmarkService.getBookmarkById(id);
 
-        assertThat(bookmark.getId(), is(id));
-        assertThat(bookmark.getUrl(), is("url1"));
-        assertThat(bookmark.getTitle(), is("title1"));
-        assertThat(bookmark.getTags(), hasSize(1));
-        assertThat(bookmark.getTags(), hasItem("tag1"));
+        assertThat(bookmarkOpt.isPresent()).isTrue();
+        //noinspection OptionalGetWithoutIsPresent
+        bookmark = bookmarkOpt.get();
+        assertThat(bookmark.getId()).isEqualTo(id);
+        assertThat(bookmark.getUrl()).isEqualTo("url0");
+        assertThat(bookmark.getTitle()).isEqualTo("title1");
+        assertThat(bookmark.getTags()).containsExactlyInAnyOrder("tag1");
 
-        assertThat(repository.getAllBookmarks(), hasSize(1));
-        assertThat(repository.getAllTags(), hasSize(1));
+        assertThat(bookmarkService.findAll()).hasSize(1);
+        assertThat(bookmarkService.findAllTags()).hasSize(1);
     }
 
-    @Test(expected = AlreadyExistsException.class)
-    public void updateBookmarkToExistingUrl() throws Exception {
-        Bookmark bookmark = repository.createBookmark(aBookmark().withUrl("url0").withTitle("title0").addTag("tag0")
-                .build());
-        repository.createBookmark(aBookmark().withUrl("url1").withTitle("title1").addTag("tag1")
-                .build());
-        bookmark.setUrl("url1");
+    @Test
+    public void findBookmarkBySearchInTitle() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("Hello world").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("world wide web").build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner3").withUrl("url3").withTitle("say hello").build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        repository.updateBookmark(bookmark);
+        Collection<Bookmark> bookmarks = bookmarkService.findByTitle("hello");
 
-        fail("AlreadyExistsException expected");
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1, bookmark3);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void updateBookmarkWithNotExistingId() throws Exception {
-        Bookmark bookmark = aBookmark().withUrl("url0").withTitle("title0").addTag("tag0").build();
-        bookmark.setId("NotExistingId");
+    @Test
+    public void findBookmarkBySearchInTitleForOwner() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("Hello world").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("world wide web").build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner3").withUrl("url3").withTitle("say hello").build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        repository.updateBookmark(bookmark);
+        Collection<Bookmark> bookmarks = bookmarkService.findByOwnerAndTitle("owner1", "hello");
 
-        fail("NotFoundException expected");
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void updateBookmarkWithoutData() throws Exception {
-        repository.updateBookmark(null);
+    @Test
+    public void findBookmarksWithTagsAnd() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner").withUrl("url1").withTitle("title1").addTag("tag1").addTag
+                ("common").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner").withUrl("url2").withTitle("title2").addTag("tag2").addTag
+                ("common").build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner").withUrl("url3").withTitle("title3").addTag("tag3").build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        fail("NullPointerException expected");
+        Collection<Bookmark> bookmarks = bookmarkService.findByTags(Arrays.asList("tag2", "common"));
+
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void updateBookmarkWithoutId() throws Exception {
-        Bookmark bookmark = aBookmark().withUrl("url0").withTitle("title0").addTag("tag0").build();
+    @Test
+    public void findBookmarksWithOwnerAndTagsAnd() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").addTag
+                ("common").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner1").withUrl("url2").withTitle("title2").addTag("tag2").addTag
+                ("common").build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner1").withUrl("url3").withTitle("title3").addTag("tag3").build();
+        Bookmark bookmark4 = aBookmark().withOwner("owner2").withUrl("url1").withTitle("title1").addTag("tag1").addTag
+                ("common").build();
+        Bookmark bookmark5 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("title2").addTag("tag2").addTag
+                ("common").build();
+        Bookmark bookmark6 = aBookmark().withOwner("owner2").withUrl("url3").withTitle("title3").addTag("tag3").build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3, bookmark4, bookmark5, bookmark6));
 
-        repository.updateBookmark(bookmark);
+        Collection<Bookmark> bookmarks = bookmarkService.findByOwnerAndTags("owner1", Arrays.asList("tag2", "common"));
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
 
-        fail("IllegalArgumentException expected");
+        bookmarks = bookmarkService.findByOwnerAndTags("owner2", Arrays.asList("tag2", "common"));
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark5);
     }
 
-*/
+    @Test
+    public void findBookmarksBySearchInTitleAndTags() throws Exception {
+        Bookmark bookmark1 =
+                aBookmark().withOwner("owner").withUrl("url1").withTitle("Hello world").addTag("tag1").build();
+        Bookmark bookmark2 =
+                aBookmark().withOwner("owner").withUrl("url2").withTitle("world wide web").addTag("tag1").addTag("tag2")
+                        .build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner").withUrl("url3").withTitle("say hello").addTag("tag3")
+                .build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
+
+        Collection<Bookmark> bookmarks =
+                bookmarkService.findByTitleAndTags("hello", Collections.singletonList("tag1"));
+
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
+    }
+
+    @Test
+    public void findBookmarksWithOwnerBySearchInTitleAndTags() throws Exception {
+        Bookmark bookmark1 =
+                aBookmark().withOwner("owner").withUrl("url1").withTitle("Hello world").addTag("tag1").build();
+        Bookmark bookmark2 =
+                aBookmark().withOwner("owner").withUrl("url2").withTitle("world wide web").addTag("tag1").addTag("tag2")
+                        .build();
+        Bookmark bookmark3 = aBookmark().withOwner("owner").withUrl("url3").withTitle("say hello").addTag("tag3")
+                .build();
+        Bookmark bookmark4 =
+                aBookmark().withOwner("owner2").withUrl("url1").withTitle("Hello world").addTag("tag1").build();
+        Bookmark bookmark5 =
+                aBookmark().withOwner("owner2").withUrl("url2").withTitle("world wide web").addTag("tag1").addTag
+                        ("tag2")
+                        .build();
+        Bookmark bookmark6 = aBookmark().withOwner("owner2").withUrl("url3").withTitle("say hello").addTag("tag3")
+                .build();
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3, bookmark4, bookmark5, bookmark6));
+
+        Collection<Bookmark> bookmarks =
+                bookmarkService.findByOwnerAndTitleAndTags("owner", "hello", Collections.singletonList("tag1"));
+
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
+    }
+
 }

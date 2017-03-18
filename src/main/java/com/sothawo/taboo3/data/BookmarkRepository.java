@@ -3,79 +3,36 @@
  */
 package com.sothawo.taboo3.data;
 
+
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.elasticsearch.repository.ElasticsearchCrudRepository;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * interface defining the bookmark repository operations.
- *
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
-public interface BookmarkRepository {
-    /**
-     * delete all entries from the repository.
-     */
-    void deleteAll();
-
-    /**
-     * save a bookmark.
-     *
-     * @param bookmark
-     *         the bookmark to save
-     */
-    void save(@NotNull Bookmark bookmark);
-
-    /**
-     * save bookmarks.
-     *
-     * @param bookmarks
-     *         the bookmarks to save
-     */
-    void save(@NotNull Iterable<Bookmark> bookmarks);
-
-    /**
-     * returns all bookmarks.
-     *
-     * @return collection of bookmarks
-     */
-    @NotNull
-    Collection<Bookmark> findAll();
-
-    /**
-     * gets all the tags from the repository.
-     *
-     * @return collection of tags
-     */
-    @NotNull
-    Collection<String> findAllTags();
-
-    /**
-     * gets al bookmarks for a given owner.
-     *
-     * @param owner
-     *         the owner
-     * @return the bookmarks for the owner
-     */
+public interface BookmarkRepository extends ElasticsearchCrudRepository<Bookmark, String> {
     @NotNull
     Collection<Bookmark> findByOwner(@NotNull String owner);
 
-    /**
-     * deletes a bookmark.
-     *
-     * @param bookmark
-     *         the bookmark to delete
-     */
-    void deleteBookmark(@NotNull Bookmark bookmark);
-
-    /**
-     * find all tags for a specific owner.
-     *
-     * @param owner
-     *         the owner
-     * @return the tags
-     */
     @NotNull
-    Collection<String> findAllTagsByOwner(@NotNull String owner);
+    Collection<Bookmark> findByTitleContaining(@NotNull String text);
+
+    @NotNull
+    Collection<Bookmark> findByOwnerAndTitleContaining(@NotNull String owner, @NotNull String text);
+
+    @NotNull
+    Collection<Bookmark> findByTagsIn(@NotNull Collection<String> tags);
+
+    @NotNull
+    Collection<Bookmark> findByOwnerAndTagsIn(@NotNull String owner, @NotNull Collection<String> tags);
+
+    @NotNull
+    Collection<Bookmark> findByTitleContainingAndTagsIn(@NotNull String text, @NotNull Collection<String> tags);
+
+    @NotNull
+    Collection<Bookmark> findByOwnerAndTitleContainingAndTagsIn(@NotNull String owner, @NotNull String text,
+                                                              @NotNull List<String> tags);
 }

@@ -54,4 +54,31 @@ public class BookmarkTest {
 
         assertThat(tags).containsExactly("abc");
     }
+
+    @Test
+    public void clearTags() throws Exception {
+        Bookmark bookmark = aBookmark()
+                .withOwner("owner")
+                .withUrl("url").withTitle("title").addTag("tag1").addTag("tag2").build();
+        assertThat(bookmark.getTags()).containsExactlyInAnyOrder("tag1", "tag2");
+
+        bookmark.clearTags();
+        assertThat(bookmark.getTags()).isEmpty();
+    }
+
+    @Test
+    public void newOwnerChangesId() throws Exception {
+        final Bookmark bookmark = aBookmark().withOwner("owner").withUrl("url").build();
+        assertThat(bookmark.getId()).isEqualTo("owner-url");
+        bookmark.setOwner("newowner");
+        assertThat(bookmark.getId()).isEqualTo("newowner-url");
+    }
+
+    @Test
+    public void newUrlChangesId() throws Exception {
+        final Bookmark bookmark = aBookmark().withOwner("owner").withUrl("url").build();
+        assertThat(bookmark.getId()).isEqualTo("owner-url");
+        bookmark.setUrl("newurl");
+        assertThat(bookmark.getId()).isEqualTo("owner-newurl");
+    }
 }
