@@ -3,6 +3,7 @@
  */
 package com.sothawo.taboo3.mvc;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping({"/", "/hello"})
 public class HelloController {
     @GetMapping
-    public ModelAndView hello() {
-        return new ModelAndView("hello");
+    public ModelAndView hello(@AuthenticationPrincipal String principal) {
+        return new ModelAndView("hello", "user", principal);
     }
 }

@@ -4,6 +4,8 @@ security:
   user:
     name: "taboo3"
     password: "3oobat"
+  basic:
+    realm: "taboo3"
 
 spring:
   data:
