@@ -3,11 +3,15 @@
  */
 package com.sothawo.taboo3.mvc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.security.Principal;
 
 /**
  * dummy controller to get the program started.
@@ -17,8 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping({"/", "/hello"})
 public class HelloController {
+    private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
     @GetMapping
-    public ModelAndView hello(@AuthenticationPrincipal String principal) {
-        return new ModelAndView("hello", "user", principal);
+    public ModelAndView hello(@AuthenticationPrincipal Principal principal) {
+        logger.info("should say hello to {}", principal.getName());
+        return new ModelAndView("hello", "userName", principal.getName());
     }
 }
