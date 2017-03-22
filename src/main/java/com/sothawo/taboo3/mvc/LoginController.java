@@ -26,7 +26,7 @@ public class LoginController {
                               @RequestParam(value = "logout", required = false) String logout) {
         final ModelAndView mav = new ModelAndView("login");
         if (null != error) {
-            mav.addObject("error", "invalid login data");
+            mav.addObject("errorText", "invalid login data");
         }
         if (null != logout) {
             mav.addObject("msg", "successfully logged out.");

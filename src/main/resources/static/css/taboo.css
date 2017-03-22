@@ -9,6 +9,10 @@ body {
     font-weight: bold;
 }
 
+.error {
+    color: red;
+}
+
 #login-form .input-group {
     margin-bottom: 10px;
 }
