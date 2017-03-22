@@ -9,11 +9,21 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
+ * security configuration.
+ *
  * @author P.J. Meisch (Peter.Meisch@hlx.com)
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    /**
+     * sets up two users in an inmemory repository.
+     *
+     * @param auth
+     *         auth builder to use
+     * @throws Exception
+     *         on error
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
