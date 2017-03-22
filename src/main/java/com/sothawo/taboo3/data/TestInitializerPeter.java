@@ -37,7 +37,7 @@ public class TestInitializerPeter {
     @PostConstruct
     void createBookmarksIfNecessary() {
         final String owner = "peter";
-        final int numBookmarks = bookmarkService.findAll().size();
+        final int numBookmarks = bookmarkService.findByOwner(owner).size();
         logger.info("repository has {} entries for user {}", numBookmarks, owner);
         if (0 == numBookmarks) {
             logger.info("setting up repository");
@@ -64,7 +64,7 @@ public class TestInitializerPeter {
                             .build();
             bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-            logger.info("repository now has {} entries for user {}", bookmarkService.findAll().size(), owner);
+            logger.info("repository now has {} entries for user {}", bookmarkService.findByOwner(owner).size(), owner);
         }
     }
 }
