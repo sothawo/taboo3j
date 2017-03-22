@@ -13,6 +13,9 @@ body {
     color: red;
 }
 
+#logout-link {
+    margin-right: 1em;
+}
 #login-form .input-group {
     margin-bottom: 10px;
 }

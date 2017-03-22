@@ -43,9 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().loginPage("/login")
+        http.formLogin()
+                .loginPage("/login")
                 .and()
                 .httpBasic().realmName("taboo3")
+                .and()
+                .logout().logoutSuccessUrl("/login?logout")
                 .and()
                 .authorizeRequests()
                 .regexMatchers("/(images|css|js|fonts)/.*").permitAll()

@@ -20,11 +20,16 @@ import java.security.Principal;
  */
 @Controller
 @RequestMapping({"/", "/hello"})
-public class HelloController {
+public class HelloController extends ControllerBase {
     private static final Logger logger = LoggerFactory.getLogger(HelloController.class);
+
     @GetMapping
     public ModelAndView hello(@AuthenticationPrincipal Principal principal) {
-        logger.info("should say hello to {}", principal.getName());
-        return new ModelAndView("hello", "userName", principal.getName());
+        final ModelAndView mav = new ModelAndView("hello");
+
+        addUserNameToModel(principal, mav);
+
+        return mav;
     }
+
 }
