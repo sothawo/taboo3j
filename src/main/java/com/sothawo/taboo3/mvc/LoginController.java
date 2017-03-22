@@ -17,9 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController {
 
     /**
-     * returns the view for the login page.
+     * returns the model and view for the login page.
      *
-     * @return
+     * @return view and model with messages.
      */
     @GetMapping
     public ModelAndView login(@RequestParam(value = "error", required = false) String error,
