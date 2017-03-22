@@ -8,13 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-
 import java.util.Arrays;
 
 import static com.sothawo.taboo3.data.BookmarkBuilder.aBookmark;
 
 /**
- * Component to setup a couple of Bookmakrs for user peter if the repository is empty.
+ * Component to setup a couple of Bookmarks for user peter if the repository is empty.
  *
  * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
@@ -43,19 +42,22 @@ public class TestInitializerPeter {
         if (0 == numBookmarks) {
             logger.info("setting up repository");
             final Bookmark bookmark1 =
-                    aBookmark().withOwner(owner)
+                    aBookmark()
+                            .withOwner(owner)
                             .withUrl("https://www.sothawo.com")
                             .withTitle("P.J. own website")
                             .addTag("sothawo").addTag("blog")
                             .build();
             final Bookmark bookmark2 =
-                    aBookmark().withOwner(owner)
+                    aBookmark()
+                            .withOwner(owner)
                             .withUrl("http://stackoverflow.com/users/4393565/p-j-meisch?tab=topactivity")
                             .withTitle("P.J. at StackOverflow")
                             .addTag("sothawo").addTag("programming")
                             .build();
             final Bookmark bookmark3 =
-                    aBookmark().withOwner(owner)
+                    aBookmark()
+                            .withOwner(owner)
                             .withUrl("https://github.com/sothawo")
                             .withTitle("P.J. at GitHUb")
                             .addTag("sothawo").addTag("programming")
