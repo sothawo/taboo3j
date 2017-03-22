@@ -9,7 +9,8 @@
     <logger name="org.springframework.web.client.RestTemplate" level="INFO"/>
     <!--<logger name="org.springframework.data.elasticsearch" level="ALL"/>-->
     <!--<logger name="org.springframework.beans" level="DEBUG" />-->
+    <!--<logger name ="org.springframework.security" level="DEBUG" />-->
 
-    <root level="WARN"/>
+    <root level="INFO"/>
 
 </configuration>

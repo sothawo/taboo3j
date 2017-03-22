@@ -5,6 +5,7 @@ package com.sothawo.taboo3.mvc;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -29,5 +30,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("peter").password("retep").roles("USER").and()
                 .withUser("admin").password("nimda").roles("USER", "ADMIN");
+    }
+
+    /**
+     * configure http basic auth with a custom login page. Allow the static assets and the login page, restrict all
+     * other.
+     *
+     * @param http
+     *         the security to configure
+     * @throws Exception
+     *         on error
+     */
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin().loginPage("/login")
+                .and()
+                .httpBasic().realmName("taboo3")
+                .and()
+                .authorizeRequests()
+                .regexMatchers("/(images|css|js|fonts)/.*").permitAll()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated();
     }
 }

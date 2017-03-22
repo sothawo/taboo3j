@@ -4,6 +4,11 @@ body {
     font: 300 16px/1.55 "Open Sans", sans-serif;
 }
 
+.page-heading {
+    font-size: larger;
+    font-weight: bold;
+}
+
 #login-form .input-group {
     margin-bottom: 10px;
 }
