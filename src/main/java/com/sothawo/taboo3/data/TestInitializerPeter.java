@@ -5,6 +5,7 @@ package com.sothawo.taboo3.data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,12 +25,7 @@ public class TestInitializerPeter {
 
     private final BookmarkService bookmarkService;
 
-    /**
-     * as a single ctor, thie arg is autowired.
-     *
-     * @param bookmarkService
-     *         the bookmarkservice
-     */
+    @Autowired
     public TestInitializerPeter(BookmarkService bookmarkService) {
         this.bookmarkService = bookmarkService;
     }
@@ -45,7 +41,7 @@ public class TestInitializerPeter {
                     aBookmark()
                             .withOwner(owner)
                             .withUrl("https://www.sothawo.com")
-                            .withTitle("P.J. own website")
+                            .withTitle("P.J.'s own website")
                             .addTag("sothawo").addTag("blog")
                             .build();
             final Bookmark bookmark2 =
@@ -66,5 +62,6 @@ public class TestInitializerPeter {
 
             logger.info("repository now has {} entries for user {}", bookmarkService.findByOwner(owner).size(), owner);
         }
+        bookmarkService.findByOwner(owner).forEach(bookmark -> logger.debug(bookmark.toString()));
     }
 }

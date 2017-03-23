@@ -33,10 +33,7 @@
 
 </head>
 <body>
-<!-- container for the whole app -->
-<div class="container-fluid">
-
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default navbar-static-top">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#navbar-collapse-1" aria-expanded="false">
@@ -62,8 +59,10 @@
         </div>
     </nav>
 
-    <div layout:fragment="content">dummy content</div>
+    <!-- container for the whole app -->
+    <div class="container">
+        <div layout:fragment="content">dummy content</div>
+    </div>
 
-</div>
 </body>
 </html>
