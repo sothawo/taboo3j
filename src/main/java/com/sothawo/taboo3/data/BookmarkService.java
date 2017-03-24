@@ -218,7 +218,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByOwnerAndTitleAndTags(@NotNull String owner, @NotNull String text,
-                                                           @NotNull List<String> tags) {
+                                                           @NotNull Collection<String> tags) {
         return bookmarkElasticRepository.findByOwnerAndTitleContainingAndTagsIn(owner, text, tags).stream()
                 .filter(bookmark -> bookmark.getTags().containsAll(tags))
                 .collect(Collectors.toList());

@@ -30,15 +30,28 @@ public class SessionStore {
     /** the selected tags. */
     private final Set<String> selectedTags = new HashSet<>();
 
-    public LocalDateTime getCreationTime() {
-        return creationTime;
+    /** the search text. */
+    private String searchText;
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 
     @Override
     public String toString() {
         return "SessionStore{" +
                 "creationTime=" + creationTime +
+                ", selectedTags=" + selectedTags +
+                ", searchText='" + searchText + '\'' +
                 '}';
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
     }
 
     /**
@@ -47,7 +60,7 @@ public class SessionStore {
      * @return true if criteria are set
      */
     public boolean hasSelectCriteria() {
-        return selectedTags.size() > 0;
+        return selectedTags.size() > 0 || (null != searchText && !searchText.isEmpty());
     }
 
     public Set<String> getSelectedTags() {

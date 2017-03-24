@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,9 +61,17 @@ public class BookmarksController {
             final Collection<String> availableTags = new ArrayList<>();
             final Collection<String> selectedTags = sessionStore.getSelectedTags();
 
+            final String searchText = sessionStore.getSearchText();
             if (sessionStore.hasSelectCriteria()) {
-                bookmarks = bookmarkService.findByOwnerAndTags(owner, selectedTags);
-
+                if (null != searchText && !searchText.isEmpty()) {
+                    if (selectedTags.isEmpty()) {
+                        bookmarks = bookmarkService.findByOwnerAndTitle(owner, searchText);
+                    } else {
+                        bookmarks = bookmarkService.findByOwnerAndTitleAndTags(owner, searchText, selectedTags);
+                    }
+                } else {
+                    bookmarks = bookmarkService.findByOwnerAndTags(owner, selectedTags);
+                }
                 // available tags are the tags from the bookmarks which are not in the available tags.
                 bookmarks.stream()
                         .map(Bookmark::getTags).flatMap(Collection::stream)
@@ -74,6 +82,8 @@ public class BookmarksController {
             } else {
                 // leave bookmarks empty
 
+                mav.addObject("bookmarksMessage", "no selection.");
+
                 // get all available tags
                 availableTags.addAll(bookmarkService.findAllTagsByOwner(owner)
                         .stream().sorted().collect(Collectors.toList()));
@@ -83,8 +93,28 @@ public class BookmarksController {
             mav.addObject("bookmarks", bookmarks);
             mav.addObject("availableTags", sortStrings(availableTags));
             mav.addObject("selectedTags", sortStrings(selectedTags));
+
+            // need this to bind the form to
+            mav.addObject("searchData", new SearchData(searchText));
         }
         return mav;
+    }
+
+    /**
+     * sets the search text and calls the bookmarks method.
+     *
+     * @param searchData
+     *         search parameters
+     * @return redirectting ModelAndView
+     */
+    @PostMapping("/search")
+    public ModelAndView searchText(SearchData searchData) {
+        if (null != searchData && null != searchData.getText()) {
+            final String searchText = searchData.getText();
+            logger.info("seeting search text to {}", searchText);
+            sessionStore.setSearchText(searchText);
+        }
+        return new ModelAndView("redirect:/bookmarks");
     }
 
     /**

@@ -8,12 +8,30 @@
 <body>
 
 <div layout:fragment="content">
-    <div th:if="${bookmarks.empty}">no bookmarks</div>
-
     <div class="row">
         <!-- div containing the different selection filters -->
         <div class="col-xs-12 col-sm-3 col-sm-push-9" id="filter-container">
             <div class="col-xs-12">
+                <!-- Button to clear the selection -->
+                <div class="row">
+                    <button class="btn btn-default" type="button" id="clearButton">
+                        clear selection
+                    </button>
+                </div>
+                <!-- search text -->
+                <div class="row">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">search...</div>
+                        <div class="panel-body">
+                            <form name="searchtext" action="#" th:action="@{/bookmarks/search}"
+                                  th:object="${searchData}"
+                                  method="post">
+                                <input type="text" id="searchText" th:value="${searchText}" th:field="*{text}">
+                                <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;">
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <!-- available tags -->
                 <div class="row">
                     <div class="panel panel-default">
@@ -50,6 +68,7 @@
         </div>
         <!-- div containing the table with the bookmarks -->
         <div class="col-xs-12 col-sm-9 col-sm-pull-3" id="table-container">
+            <div th:text="${bookmarksMessage}" id="bookmarksMessage">message text</div>
             <table th:unless="${bookmarks.empty}"
                    class="table table-striped table-bordered bookmark-table">
                 <tr th:each="bookmark: ${bookmarks}">

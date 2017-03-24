@@ -32,6 +32,11 @@ body {
     width: 100%;
 }
 
+#bookmarksMessage {
+    font-size: larger;
+    text-align: center;
+}
+
 .bookmark-table .bookmark-title {
     font-size: larger;
 }
