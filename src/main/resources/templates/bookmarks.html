@@ -19,10 +19,14 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">available tags</div>
                         <div class="panel-body">
-                            <button th:each="tag : ${availableTags}"
-                                    class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
-                                Tag
-                            </button>
+                            <div th:if="${availableTags}">
+                                <a th:each="tag : ${availableTags}"
+                                   href="#" th:href="@{'/bookmarks?selectTag=' + ${tag}}">
+                                    <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
+                                        Tag
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -31,6 +35,14 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">selected tags</div>
                         <div class="panel-body">
+                            <div th:if="${selectedTags}">
+                                <a th:each="tag : ${selectedTags}"
+                                   href="#" th:href="@{'/bookmarks?deselectTag=' + ${tag}}">
+                                    <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
+                                        Tag
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

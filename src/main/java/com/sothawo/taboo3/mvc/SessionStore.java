@@ -4,12 +4,15 @@
 package com.sothawo.taboo3.mvc;
 
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * session scoped object to store the currently selections and bookmarks.
@@ -20,8 +23,12 @@ import java.time.LocalDateTime;
 @SessionScope
 public class SessionStore {
     private static final Logger logger = LoggerFactory.getLogger(SessionStore.class);
+
     /** time when the store was created. */
     private final LocalDateTime creationTime = LocalDateTime.now();
+
+    /** the selected tags. */
+    private final Set<String> selectedTags = new HashSet<>();
 
     public LocalDateTime getCreationTime() {
         return creationTime;
@@ -32,5 +39,41 @@ public class SessionStore {
         return "SessionStore{" +
                 "creationTime=" + creationTime +
                 '}';
+    }
+
+    /**
+     * checks wether some criteria for selecting bookmarks are set.
+     *
+     * @return true if criteria are set
+     */
+    public boolean hasSelectCriteria() {
+        return selectedTags.size() > 0;
+    }
+
+    public Set<String> getSelectedTags() {
+        return selectedTags;
+    }
+
+    /**
+     * adds a tag to to the set of selected tags
+     *
+     * @param tag
+     *         the tag to add, if null it is ignored
+     */
+    public void addSelectedTag(@Nullable String tag) {
+        if (null != tag) {
+            selectedTags.add(tag);
+        }
+    }
+
+    /**
+     * removes a tag from the set of selected tags
+     *
+     * @param tag
+     */
+    public void removeSelectedTag(String tag) {
+        if (null != tag) {
+            selectedTags.remove(tag);
+        }
     }
 }
