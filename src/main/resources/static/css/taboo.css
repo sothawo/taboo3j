@@ -1,0 +1,58 @@
+
+body {
+    font: 300 16px/1.55 "Open Sans", sans-serif;
+}
+
+.page-heading {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+}
+
+#logout-link {
+    margin-right: 1em;
+}
+#login-form .input-group {
+    margin-bottom: 10px;
+}
+
+#bookmarkEntry button {
+    margin-top: 25px;
+}
+
+#clearButton {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#searchText {
+    width: 100%;
+}
+
+.bookmark-table .bookmark-title {
+    font-size: larger;
+}
+
+.bookmark-table .bookmark-url {
+}
+
+.bookmark-table .bookmark-tags {
+    font-size: smaller;
+}
+
+.bookmark-table .bookmark-buttons {
+    text-align: right;
+}
+
+.bookmark-table button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.taglist-entry {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
