@@ -14,7 +14,7 @@
             <div class="col-xs-12">
                 <!-- Button to clear the selection -->
                 <div class="row">
-                    <form name="clearSelection" action="#" th:action="@{/bookmarks/clear}" method="post">
+                    <form name="clearSelection" action="#" th:action="@{/clearSelection}" method="post">
                         <button class="btn btn-default" type="submit" id="clearButton">
                             clear selection
                         </button>
@@ -23,7 +23,7 @@
                 <!-- search text -->
                 <div class="row">
                     <div id="searchForm">
-                        <form name="searchtext" action="#" th:action="@{/bookmarks/search}"
+                        <form name="searchtext" action="#" th:action="@{/searchText}"
                               th:object="${searchData}"
                               method="post">
                             <div class="input-group">
@@ -43,7 +43,7 @@
                         <div class="panel-body">
                             <div th:if="${selectedTags}">
                                 <a th:each="tag : ${selectedTags}"
-                                   href="#" th:href="@{'/bookmarks?deselectTag=' + ${tag}}">
+                                   href="#" th:href="@{'/?deselectTag=' + ${tag}}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
                                     </button>
@@ -59,7 +59,7 @@
                         <div class="panel-body">
                             <div th:if="${availableTags}">
                                 <a th:each="tag : ${availableTags}"
-                                   href="#" th:href="@{'/bookmarks?selectTag=' + ${tag}}">
+                                   href="#" th:href="@{'/?selectTag=' + ${tag}}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
                                     </button>

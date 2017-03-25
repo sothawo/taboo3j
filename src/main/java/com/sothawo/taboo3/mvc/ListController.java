@@ -24,32 +24,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Controller for displaying the bookmarks list.
+ *
  * @author P.J. Meisch (Peter.Meisch@hlx.com)
  */
 @Controller
-@RequestMapping({"/", "/bookmarks"})
-public class BookmarksController {
-    private static final Logger logger = LoggerFactory.getLogger(BookmarksController.class);
+@RequestMapping("/")
+public class ListController {
+    private static final Logger logger = LoggerFactory.getLogger(ListController.class);
 
     private final SessionStore sessionStore;
     private final BookmarkService bookmarkService;
 
     @Autowired
-    public BookmarksController(SessionStore sessionStore, BookmarkService bookmarkService) {
+    public ListController(SessionStore sessionStore, BookmarkService bookmarkService) {
         this.sessionStore = sessionStore;
         this.bookmarkService = bookmarkService;
     }
 
     /**
-     * returns all bookmarks to display.
+     * returns all bookmarks to display. Takes the slection criteria from the injected SessionStorage.
      *
      * @return model data and view name
      */
     @GetMapping
-    public ModelAndView bookmarks(@AuthenticationPrincipal Principal principal,
-                                  @RequestParam(value = "selectTag", required = false) String selectTag,
-                                  @RequestParam(value = "deselectTag", required = false) String deselectTag) {
-        ModelAndView mav = new ModelAndView("bookmarks");
+    public ModelAndView bookmarksList(@AuthenticationPrincipal Principal principal,
+                                      @RequestParam(value = "selectTag", required = false) String selectTag,
+                                      @RequestParam(value = "deselectTag", required = false) String deselectTag) {
+        ModelAndView mav = new ModelAndView("list");
 
         String owner = (null != principal) ? principal.getName() : null;
         if (null != owner) {
@@ -107,25 +109,25 @@ public class BookmarksController {
      *         search parameters
      * @return redirectting ModelAndView
      */
-    @PostMapping("/search")
+    @PostMapping("/searchText")
     public ModelAndView searchText(SearchData searchData) {
         if (null != searchData && null != searchData.getText()) {
             final String searchText = searchData.getText();
-            logger.info("seeting search text to {}", searchText);
+            logger.info("setting search text to {}", searchText);
             sessionStore.setSearchText(searchText);
         }
-        return new ModelAndView("redirect:/bookmarks");
+        return new ModelAndView("redirect:/");
     }
 
     /**
-     * clears the selction data.
+     * clears the selection data.
      *
      * @return redirecting ModelAndView
      */
-    @PostMapping("clear")
+    @PostMapping("/clearSelection")
     public ModelAndView clearSelection() {
         sessionStore.clearSelection();
-        return new ModelAndView("redirect:/bookmarks");
+        return new ModelAndView("redirect:/");
     }
 
     /**
