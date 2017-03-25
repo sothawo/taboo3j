@@ -1,10 +1,5 @@
 #default application configuration
 
-security:
-  user:
-    name: "taboo3"
-    password: "3oobat"
-
 spring:
   data:
     elasticsearch:
@@ -12,4 +7,6 @@ spring:
       properties:
         path:
           data: "tmpdata/elastic"
+  thymeleaf:
+    mode: "HTML"
 

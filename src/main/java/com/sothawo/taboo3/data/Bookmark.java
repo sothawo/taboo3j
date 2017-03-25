@@ -7,13 +7,12 @@ package com.sothawo.taboo3.data;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -137,5 +136,14 @@ public final class Bookmark {
      */
     public void clearTags() {
         tags.clear();
+    }
+
+    /**
+     * join all strings together.
+     *
+     * @return all Strings joined
+     */
+    public String joinedTags() {
+        return getTags().stream().collect(Collectors.joining(", "));
     }
 }

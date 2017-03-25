@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>taboo3j</name>
-	<description>tagged bookmarks verison3 in Java</description>
+	<description>tagged bookmarks version3 in Java</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -22,6 +22,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+
+		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
+		<thymeleaf-layout-dialect.version>2.1.1</thymeleaf-layout-dialect.version>
 	</properties>
 
 	<dependencies>

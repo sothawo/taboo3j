@@ -34,5 +34,5 @@ public interface BookmarkRepository extends ElasticsearchCrudRepository<Bookmark
 
     @NotNull
     Collection<Bookmark> findByOwnerAndTitleContainingAndTagsIn(@NotNull String owner, @NotNull String text,
-                                                              @NotNull List<String> tags);
+                                                              @NotNull Collection   <String> tags);
 }
