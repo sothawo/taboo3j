@@ -32,6 +32,10 @@ body {
     width: 100%;
 }
 
+#searchForm {
+    margin-bottom: 12px;
+}
+
 #bookmarksMessage {
     font-size: larger;
     text-align: center;

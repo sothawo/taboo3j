@@ -118,6 +118,17 @@ public class BookmarksController {
     }
 
     /**
+     * clears the selction data.
+     *
+     * @return redirecting ModelAndView
+     */
+    @PostMapping("clear")
+    public ModelAndView clearSelection() {
+        sessionStore.clearSelection();
+        return new ModelAndView("redirect:/bookmarks");
+    }
+
+    /**
      * converts a String colleciton to a sorted list.
      *
      * @param c

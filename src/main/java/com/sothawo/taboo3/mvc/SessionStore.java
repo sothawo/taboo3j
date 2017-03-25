@@ -89,4 +89,12 @@ public class SessionStore {
             selectedTags.remove(tag);
         }
     }
+
+    /**
+     * clears the selection data.
+     */
+    public void clearSelection() {
+        searchText = null;
+        selectedTags.clear();
+    }
 }

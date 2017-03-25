@@ -14,21 +14,41 @@
             <div class="col-xs-12">
                 <!-- Button to clear the selection -->
                 <div class="row">
-                    <button class="btn btn-default" type="button" id="clearButton">
-                        clear selection
-                    </button>
+                    <form name="clearSelection" action="#" th:action="@{/bookmarks/clear}" method="post">
+                        <button class="btn btn-default" type="submit" id="clearButton">
+                            clear selection
+                        </button>
+                    </form>
                 </div>
                 <!-- search text -->
                 <div class="row">
+                    <div id="searchForm">
+                        <form name="searchtext" action="#" th:action="@{/bookmarks/search}"
+                              th:object="${searchData}"
+                              method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                                <input type="text" id="searchText" class="form-control" th:value="${searchText}"
+                                       th:field="*{text}">
+                            </div>
+                            <input type="submit"
+                                   style="position: absolute; left: -9999px; width: 1px; height: 1px;">
+                        </form>
+                    </div>
+                </div>
+                <!-- selected tags -->
+                <div class="row">
                     <div class="panel panel-default">
-                        <div class="panel-heading">search...</div>
+                        <div class="panel-heading">selected tags</div>
                         <div class="panel-body">
-                            <form name="searchtext" action="#" th:action="@{/bookmarks/search}"
-                                  th:object="${searchData}"
-                                  method="post">
-                                <input type="text" id="searchText" th:value="${searchText}" th:field="*{text}">
-                                <input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;">
-                            </form>
+                            <div th:if="${selectedTags}">
+                                <a th:each="tag : ${selectedTags}"
+                                   href="#" th:href="@{'/bookmarks?deselectTag=' + ${tag}}">
+                                    <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
+                                        Tag
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -40,22 +60,6 @@
                             <div th:if="${availableTags}">
                                 <a th:each="tag : ${availableTags}"
                                    href="#" th:href="@{'/bookmarks?selectTag=' + ${tag}}">
-                                    <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
-                                        Tag
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- selected tags -->
-                <div class="row">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">selected tags</div>
-                        <div class="panel-body">
-                            <div th:if="${selectedTags}">
-                                <a th:each="tag : ${selectedTags}"
-                                   href="#" th:href="@{'/bookmarks?deselectTag=' + ${tag}}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
                                     </button>
