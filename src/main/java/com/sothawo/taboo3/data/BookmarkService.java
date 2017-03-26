@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -22,18 +21,18 @@ import java.util.stream.StreamSupport;
 public class BookmarkService {
 
     /** the standard spring-data repository. */
-    private final BookmarkRepository bookmarkElasticRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     @Autowired
-    public BookmarkService(BookmarkRepository bookmarkElasticRepository) {
-        this.bookmarkElasticRepository = bookmarkElasticRepository;
+    public BookmarkService(BookmarkRepository bookmarkRepository) {
+        this.bookmarkRepository = bookmarkRepository;
     }
 
     /**
      * delete all entries from the repository.
      */
     public void deleteAll() {
-        bookmarkElasticRepository.deleteAll();
+        bookmarkRepository.deleteAll();
     }
 
     /**
@@ -43,7 +42,7 @@ public class BookmarkService {
      *         the woner
      */
     public void deleteByOwner(@NotNull String owner) {
-        bookmarkElasticRepository.delete(bookmarkElasticRepository.findByOwner(owner));
+        bookmarkRepository.delete(bookmarkRepository.findByOwner(owner));
     }
 
     /**
@@ -53,7 +52,7 @@ public class BookmarkService {
      *         the bookmark to save
      */
     public void save(@NotNull Bookmark bookmark) {
-        bookmarkElasticRepository.save(bookmark);
+        bookmarkRepository.save(bookmark);
     }
 
     /**
@@ -63,7 +62,7 @@ public class BookmarkService {
      *         the bookmarks to save
      */
     public void save(@NotNull Iterable<Bookmark> bookmarks) {
-        bookmarkElasticRepository.save(bookmarks);
+        bookmarkRepository.save(bookmarks);
     }
 
     /**
@@ -73,7 +72,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findAll() {
-        return StreamSupport.stream(bookmarkElasticRepository.findAll().spliterator(), false)
+        return StreamSupport.stream(bookmarkRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }
 
@@ -84,7 +83,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<String> findAllTags() {
-        return StreamSupport.stream(bookmarkElasticRepository.findAll().spliterator(), false).map(Bookmark::getTags)
+        return StreamSupport.stream(bookmarkRepository.findAll().spliterator(), false).map(Bookmark::getTags)
                 .flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
@@ -97,7 +96,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByOwner(@NotNull String owner) {
-        return bookmarkElasticRepository.findByOwner(owner);
+        return bookmarkRepository.findByOwner(owner);
     }
 
     /**
@@ -107,7 +106,7 @@ public class BookmarkService {
      *         the bookmark to delete
      */
     public void deleteBookmark(@NotNull Bookmark bookmark) {
-        bookmarkElasticRepository.delete(bookmark);
+        bookmarkRepository.delete(bookmark);
     }
 
     /**
@@ -119,7 +118,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<String> findAllTagsByOwner(@NotNull String owner) {
-        return StreamSupport.stream(bookmarkElasticRepository.findByOwner(owner).spliterator(), false)
+        return StreamSupport.stream(bookmarkRepository.findByOwner(owner).spliterator(), false)
                 .map(Bookmark::getTags).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
@@ -132,7 +131,7 @@ public class BookmarkService {
      */
     @NotNull
     public Optional<Bookmark> getBookmarkById(@NotNull String id) {
-        return Optional.ofNullable(bookmarkElasticRepository.findOne(id));
+        return Optional.ofNullable(bookmarkRepository.findOne(id));
     }
 
     /**
@@ -144,7 +143,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByTitle(@NotNull String text) {
-        return bookmarkElasticRepository.findByTitleContaining(text);
+        return bookmarkRepository.findByTitleContaining(text);
     }
 
     /**
@@ -158,7 +157,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByOwnerAndTitle(@NotNull String owner, @NotNull String text) {
-        return bookmarkElasticRepository.findByOwnerAndTitleContaining(owner, text);
+        return bookmarkRepository.findByOwnerAndTitleContaining(owner, text);
     }
 
     /**
@@ -170,7 +169,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByTags(@NotNull Collection<String> tags) {
-        return bookmarkElasticRepository.findByTagsIn(tags).stream()
+        return bookmarkRepository.findByTagsIn(tags).stream()
                 .filter(bookmark -> bookmark.getTags().containsAll(tags))
                 .collect(Collectors.toList());
     }
@@ -184,7 +183,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByOwnerAndTags(@NotNull String owner, @NotNull Collection<String> tags) {
-        return bookmarkElasticRepository.findByOwnerAndTagsIn(owner, tags).stream().
+        return bookmarkRepository.findByOwnerAndTagsIn(owner, tags).stream().
                 filter(bookmark -> bookmark.getTags().containsAll(tags))
                 .collect(Collectors.toList());
     }
@@ -200,7 +199,7 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByTitleAndTags(@NotNull String text, @NotNull Collection<String> tags) {
-        return bookmarkElasticRepository.findByTitleContainingAndTagsIn(text, tags).stream()
+        return bookmarkRepository.findByTitleContainingAndTagsIn(text, tags).stream()
                 .filter(bookmark -> bookmark.getTags().containsAll(tags))
                 .collect(Collectors.toList());
     }
@@ -219,8 +218,29 @@ public class BookmarkService {
     @NotNull
     public Collection<Bookmark> findByOwnerAndTitleAndTags(@NotNull String owner, @NotNull String text,
                                                            @NotNull Collection<String> tags) {
-        return bookmarkElasticRepository.findByOwnerAndTitleContainingAndTagsIn(owner, text, tags).stream()
+        return bookmarkRepository.findByOwnerAndTitleContainingAndTagsIn(owner, text, tags).stream()
                 .filter(bookmark -> bookmark.getTags().containsAll(tags))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * finds a bookmark by its id.
+     *
+     * @param id
+     *         the id
+     * @return the optional bookmark
+     */
+    public Optional<Bookmark> findById(String id) {
+        return Optional.ofNullable(bookmarkRepository.findOne(id));
+    }
+
+    /**
+     * deletes a bookmark idfentified by its id
+     *
+     * @param id
+     *         the id
+     */
+    public void deleteBookmark(String id) {
+        bookmarkRepository.delete(id);
     }
 }

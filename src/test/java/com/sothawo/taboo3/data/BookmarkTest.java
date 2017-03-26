@@ -18,7 +18,7 @@ public class BookmarkTest {
                 .withUrl("url").withTitle("title").addTag("tag1").addTag("tag2").build();
         Collection<String> tags = bookmark.getTags();
 
-        assertThat(bookmark.getId()).isEqualTo("owner-url");
+        assertThat(bookmark.getId()).isNotNull().isNotEmpty();
         assertThat(bookmark.getOwner()).isEqualTo("owner");
         assertThat(bookmark.getTitle()).isEqualTo("title");
         assertThat(bookmark.getUrl()).isEqualTo("url");
@@ -69,16 +69,16 @@ public class BookmarkTest {
     @Test
     public void newOwnerChangesId() throws Exception {
         final Bookmark bookmark = aBookmark().withOwner("owner").withUrl("url").build();
-        assertThat(bookmark.getId()).isEqualTo("owner-url");
+        String id = bookmark.getId();
         bookmark.setOwner("newowner");
-        assertThat(bookmark.getId()).isEqualTo("newowner-url");
+        assertThat(bookmark.getId()).isNotEqualTo(id);
     }
 
     @Test
     public void newUrlChangesId() throws Exception {
         final Bookmark bookmark = aBookmark().withOwner("owner").withUrl("url").build();
-        assertThat(bookmark.getId()).isEqualTo("owner-url");
+        String id = bookmark.getId();
         bookmark.setUrl("newurl");
-        assertThat(bookmark.getId()).isEqualTo("owner-newurl");
+        assertThat(bookmark.getId()).isNotEqualTo(id);
     }
 }

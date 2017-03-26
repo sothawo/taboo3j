@@ -41,14 +41,14 @@ body {
     text-align: center;
 }
 
-.bookmark-table .bookmark-title {
+.bookmark-title {
     font-size: larger;
 }
 
-.bookmark-table .bookmark-url {
+.bookmark-url {
 }
 
-.bookmark-table .bookmark-tags {
+.bookmark-tags {
     font-size: smaller;
 }
 
@@ -59,6 +59,10 @@ body {
 .bookmark-table button {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.bookmark-display {
+    margin-bottom: 10px;
 }
 
 .taglist-entry {
