@@ -8,6 +8,10 @@ package com.sothawo.taboo3.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,6 +40,16 @@ public final class Bookmark {
     private String url = "";
     /** the title of a bookmark. */
     private String title = "";
+
+    private static final MessageDigest md5;
+
+    static {
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     Bookmark() {
     }
@@ -81,9 +95,11 @@ public final class Bookmark {
     }
 
     void buildId() {
-        this.id = ((null == owner) ? "(null)" : owner.toLowerCase())
+        String s = ((null == owner) ? "(null)" : owner.toLowerCase())
                 + '-'
                 + ((null == url) ? "(null)" : url);
+        md5.update(StandardCharsets.UTF_8.encode(s));
+        id = String.format("%032x", new BigInteger(1, md5.digest()));
     }
 
     @Override

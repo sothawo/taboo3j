@@ -95,9 +95,11 @@
                                     <button class="btn btn-default btn-sm glyphicon glyphicon-edit"
                                             type="button">
                                     </button>
-                                    <button class="btn btn-default btn-sm glyphicon glyphicon-trash"
-                                            type="button">
-                                    </button>
+                                    <a href="#" th:href="@{'/bookmark/delete/' + ${bookmark.id}}">
+                                        <button class="btn btn-default btn-sm glyphicon glyphicon-trash"
+                                                type="button">
+                                        </button>
+                                    <a>
                                 </div>
                             </div>
                         </div>

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Fail.fail;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext
-public class BookmarkRepositoryTest {
+public class BookmarkServiceTest {
 
     @Autowired
     BookmarkService bookmarkService;
@@ -103,6 +103,18 @@ public class BookmarkRepositoryTest {
     }
 
     @Test
+    public void deleteExistingBookmarkById() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner").withUrl("url1").withTitle("title1").addTag("tag1").build();
+        Bookmark bookmark2 = aBookmark().withOwner("owner").withUrl("url2").withTitle("title2").addTag("tag2").build();
+
+        bookmarkService.save(Arrays.asList(bookmark1, bookmark2));
+        bookmarkService.deleteBookmark(bookmark2.getId());
+
+        final Collection<Bookmark> bookmarks = bookmarkService.findAll();
+        assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
+    }
+
+    @Test
     public void deleteAllBookmarkForOwner() throws Exception {
         Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").build();
         Bookmark bookmark2 = aBookmark().withOwner("owner2").withUrl("url2").withTitle("title2").addTag("tag2").build();
@@ -112,6 +124,17 @@ public class BookmarkRepositoryTest {
 
         final Collection<Bookmark> bookmarks = bookmarkService.findAll();
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
+    }
+
+    @Test
+    public void findById() throws Exception {
+        Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").build();
+
+        bookmarkService.save(bookmark1);
+        final Optional<Bookmark> bookmarkOptional = bookmarkService.findById(bookmark1.getId());
+
+        assertThat(bookmarkOptional.isPresent()).isTrue();
+        assertThat(bookmarkOptional.get()).isEqualTo(bookmark1);
     }
 
     @Test
