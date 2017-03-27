@@ -3,6 +3,7 @@
  */
 package com.sothawo.taboo3.mvc;
 
+import com.sothawo.taboo3.data.BookmarkEdit;
 import com.sothawo.taboo3.data.BookmarkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,38 @@ public class BookmarkController {
         } catch (Exception e) {
             logger.warn(e.getMessage());
         }
+        return new ModelAndView("redirect:/");
+    }
+
+    /**
+     * displays a bookmark for editing.
+     *
+     * @param id
+     *         the id of the bookmark.
+     * @return MOdelAndView for editing or redirect to home page if bookmark is not found
+     */
+    @GetMapping("/edit/{id}")
+    public ModelAndView showForEdit(@PathVariable String id) {
+        logger.info("delete view requested for id {}", id);
+        return bookmarkService.findById(id)
+                .map(bookmark -> new ModelAndView("edit")
+                        .addObject("bookmark", new BookmarkEdit(bookmark)))
+                .orElse(new ModelAndView("redirect:/"));
+
+    }
+
+    /**
+     * does the editing
+     * @param bookmarkEdit the edited bookmark.
+     * @return ModelAndView with redirect to the main page.
+     */
+    @PostMapping("/edit")
+    public ModelAndView doEdit(BookmarkEdit bookmarkEdit) {
+        logger.info("updating {}", bookmarkEdit);
+        if (!bookmarkEdit.getOriginalId().equals(bookmarkEdit.getId())) {
+            bookmarkService.deleteBookmark(bookmarkEdit.getOriginalId());
+        }
+        bookmarkService.save(bookmarkEdit.getBookmark());
         return new ModelAndView("redirect:/");
     }
 }
