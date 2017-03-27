@@ -317,4 +317,24 @@ public class BookmarkServiceTest {
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
 
+    @Test
+    public void saveBookmarkEditClass() throws Exception {
+        Bookmark bookmark =
+                aBookmark().withOwner("owner").withUrl("url1").withTitle("Hello world").addTag("tag1").build();
+        bookmarkService.save(bookmark);
+
+        final BookmarkEdit bookmarkEdit = new BookmarkEdit(bookmark);
+        bookmarkEdit.setTitle("new title");
+        bookmarkService.save(bookmarkEdit.getBookmark());
+
+        final Collection<Bookmark> bookmarks = bookmarkService.findAll();
+        assertThat(bookmarks).hasSize(1);
+        final Bookmark changedBookmark = bookmarks.iterator().next();
+
+        assertThat(changedBookmark.getOwner()).isEqualTo(bookmark.getOwner());
+        assertThat(changedBookmark.getUrl()).isEqualTo(bookmark.getUrl());
+        assertThat(changedBookmark.getTags())
+                .containsExactlyInAnyOrder(bookmark.getTags().toArray(new String[bookmark.getTags().size()]));
+        assertThat(bookmark.getTitle()).isEqualTo("new title");
+    }
 }

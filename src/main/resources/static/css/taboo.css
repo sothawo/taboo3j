@@ -3,13 +3,12 @@ body {
     font: 300 16px/1.55 "Open Sans", sans-serif;
 }
 
-.page-heading {
-    font-size: larger;
-    font-weight: bold;
-}
-
 .error {
     color: red;
+}
+
+.nohover:hover {
+    text-decoration: none;
 }
 
 #logout-link {
@@ -68,4 +67,8 @@ body {
 .taglist-entry {
     margin-right: 10px;
     margin-bottom: 10px;
+}
+
+#delete-form .input-group {
+    padding: 5px;
 }

@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
  * @author P.J. Meisch (pj.meisch@sothawo.com).
  */
 @Document(indexName = "bookmarks")
-public final class Bookmark {
+public class Bookmark {
 
     /** the tags of the bookmark. */
     private final Collection<String> tags = new HashSet<>();
@@ -155,11 +155,11 @@ public final class Bookmark {
     }
 
     /**
-     * join all strings together.
+     * join all strings together in ascendig order.
      *
      * @return all Strings joined
      */
     public String joinedTags() {
-        return getTags().stream().collect(Collectors.joining(", "));
+        return getTags().stream().sorted().collect(Collectors.joining(", "));
     }
 }

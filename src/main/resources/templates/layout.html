@@ -44,9 +44,12 @@
             </button>
             <img class="navbar-brand" src="../static/images/sothawofant-32.png"
                  th:src="@{/images/sothawofant-32.png}">
-            <p class="navbar-text">taboo3</p>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="#" th:href="@{/}">bookmarks</a></li>
+                <li><a href="#" th:href="@{/}">add new</a></li>
+            </ul>
             <div id="logout-link" th:if="${userName}" class="navbar-text navbar-right">
                 <form th:action="@{/logout}" method="post">
                     <i class="glyphicon glyphicon-user"></i>

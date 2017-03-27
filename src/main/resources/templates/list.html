@@ -42,7 +42,7 @@
                         <div class="panel-heading">selected tags</div>
                         <div class="panel-body">
                             <div th:if="${selectedTags}">
-                                <a th:each="tag : ${selectedTags}"
+                                <a class="nohover" th:each="tag : ${selectedTags}"
                                    href="#" th:href="@{'/?deselectTag=' + ${tag}}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
@@ -58,7 +58,7 @@
                         <div class="panel-heading">available tags</div>
                         <div class="panel-body">
                             <div th:if="${availableTags}">
-                                <a th:each="tag : ${availableTags}"
+                                <a class="nohover" th:each="tag : ${availableTags}"
                                    href="#" th:href="@{'/?selectTag=' + ${tag}}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
@@ -92,14 +92,16 @@
                                 </div>
                                 <!-- buttons to edit and delete-->
                                 <div class="col-xs-2 bookmark-buttons">
-                                    <button class="btn btn-default btn-sm glyphicon glyphicon-edit"
-                                            type="button">
-                                    </button>
-                                    <a href="#" th:href="@{'/bookmark/delete/' + ${bookmark.id}}">
+                                    <a class="nohover" href="#" th:href="@{'/bookmark/edit/' + ${bookmark.id}}">
+                                        <button class="btn btn-default btn-sm glyphicon glyphicon-edit"
+                                                type="button">
+                                        </button>
+                                    </a>
+                                    <a class="nohover" href="#" th:href="@{'/bookmark/delete/' + ${bookmark.id}}">
                                         <button class="btn btn-default btn-sm glyphicon glyphicon-trash"
                                                 type="button">
                                         </button>
-                                    <a>
+                                        <a>
                                 </div>
                             </div>
                         </div>
