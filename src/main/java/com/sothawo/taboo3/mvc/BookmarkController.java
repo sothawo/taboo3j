@@ -8,18 +8,25 @@ import com.sothawo.taboo3.data.BookmarkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.security.Principal;
+
+import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
 
 
 /**
  * Controller to handle single bookmarks (add, edit, delete).
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Controller
 @RequestMapping("/bookmark")
@@ -79,23 +86,58 @@ public class BookmarkController {
         logger.info("delete view requested for id {}", id);
         return bookmarkService.findById(id)
                 .map(bookmark -> new ModelAndView("edit")
-                        .addObject("bookmark", new BookmarkEdit(bookmark)))
+                        .addObject("bookmark", new BookmarkEdit(bookmark))
+                        .addObject("config", anAddEditConfig().withCaption("edit bookmark").withButtonLabel("update")
+                                .withMode("edit").build()))
                 .orElse(new ModelAndView("redirect:/"));
 
     }
 
     /**
-     * does the editing
-     * @param bookmarkEdit the edited bookmark.
+     * does the editing/adding
+     *
+     * @param principal
+     *         the user, needed to insert owner in add
+     * @param bookmarkEdit
+     *         the edited/new  bookmark.
+     * @param mode
+     *         the mode, update or add
      * @return ModelAndView with redirect to the main page.
      */
     @PostMapping("/edit")
-    public ModelAndView doEdit(BookmarkEdit bookmarkEdit) {
-        logger.info("updating {}", bookmarkEdit);
-        if (!bookmarkEdit.getOriginalId().equals(bookmarkEdit.getId())) {
-            bookmarkService.deleteBookmark(bookmarkEdit.getOriginalId());
+    public ModelAndView doUpdate(@AuthenticationPrincipal Principal principal, BookmarkEdit bookmarkEdit,
+                                 @RequestParam("mode") String mode) {
+        final String url = bookmarkEdit.getUrl();
+        if (null == url || url.isEmpty()) {
+            // todo: error message
+            return new ModelAndView("redirect:/bookmark/edit/" + bookmarkEdit.getOriginalId());
         }
-        bookmarkService.save(bookmarkEdit.getBookmark());
+        if (!url.startsWith("http")) {
+            bookmarkEdit.setUrl("http://" + url);
+        }
+        if ("edit".equals(mode)) {
+            logger.info("updating {}", bookmarkEdit);
+            if (!bookmarkEdit.getOriginalId().equals(bookmarkEdit.getId())) {
+                bookmarkService.deleteBookmark(bookmarkEdit.getOriginalId());
+            }
+            bookmarkService.save(bookmarkEdit.getBookmark());
+        } else if ("add".equals(mode)) {
+            bookmarkEdit.setOwner(principal.getName());
+            logger.info("inserting {}", bookmarkEdit);
+            bookmarkService.save(bookmarkEdit.getBookmark());
+        }
         return new ModelAndView("redirect:/");
+    }
+
+    /**
+     * shows the view for adding a bookmark.
+     *
+     * @return ModelAndView for editiing with a new empty BookmarkEdit object.
+     */
+    @GetMapping("/add")
+    public ModelAndView showForAdd() {
+        return new ModelAndView("edit").addObject("bookmark", new BookmarkEdit())
+                .addObject("config",
+                        anAddEditConfig().withCaption("add bookmark").withButtonLabel("add").withMode("add").build());
     }
 }

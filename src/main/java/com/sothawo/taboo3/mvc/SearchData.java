@@ -6,7 +6,7 @@ package com.sothawo.taboo3.mvc;
 /**
  * data for a search request.
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 public class SearchData {
     private String text;

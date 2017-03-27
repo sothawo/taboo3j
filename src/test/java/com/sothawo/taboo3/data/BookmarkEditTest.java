@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 public class BookmarkEditTest {
     @Test
@@ -21,8 +21,8 @@ public class BookmarkEditTest {
     @Test
     public void setTagsAsString() throws Exception {
         BookmarkEdit bookmarkEdit = new BookmarkEdit();
-        bookmarkEdit.setTagsAsString("tag1, tag2; tag3");
+        bookmarkEdit.setTagsAsString("tag1, tag2; tag3 tag4");
 
-        assertThat(bookmarkEdit.getTags()).containsExactlyInAnyOrder("tag1", "tag2", "tag3");
+        assertThat(bookmarkEdit.getTags()).containsExactlyInAnyOrder("tag1", "tag2", "tag3", "tag4");
     }
 }

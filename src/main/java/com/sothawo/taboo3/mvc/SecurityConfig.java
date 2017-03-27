@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /**
  * security configuration.
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Configuration
 @EnableWebSecurity
@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("peter").password("retep").roles("USER").and()
+                .withUser("work").password("krow").roles("USER").and()
                 .withUser("admin").password("nimda").roles("USER", "ADMIN");
     }
 

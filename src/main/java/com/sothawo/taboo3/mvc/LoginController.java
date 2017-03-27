@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Controller
 @RequestMapping("/login")

@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * session scoped object to store the currently selections and bookmarks.
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Component
 @SessionScope

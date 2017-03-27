@@ -12,13 +12,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Bookmark class that has the tags as joined string, needed for editing.
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 public class BookmarkEdit {
     /** the delegated bookmark. */
     private Bookmark bookmark = new Bookmark();
     /** the id of the original bookmark. */
     private String originalId = "";
+
     public BookmarkEdit() {
     }
 
@@ -97,7 +98,7 @@ public class BookmarkEdit {
 
     public void setTagsAsString(@Nullable String tagsAsString) {
         if (null != tagsAsString) {
-            for (String tag : tagsAsString.split("[,;]\\s+")) {
+            for (String tag : tagsAsString.split("[,;\\s]+")) {
                 addTag(tag);
             }
         }

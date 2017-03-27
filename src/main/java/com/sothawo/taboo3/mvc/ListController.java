@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Controller for displaying the bookmarks list.
  *
- * @author P.J. Meisch (Peter.Meisch@hlx.com)
+ * @author P.J. Meisch (pj.meisch@sothawo.com)
  */
 @Controller
 @RequestMapping("/")
