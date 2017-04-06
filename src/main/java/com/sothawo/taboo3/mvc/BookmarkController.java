@@ -1,10 +1,11 @@
 /*
- * (c) Copyright 2017 HLX Touristik GmbH
+ * (c) Copyright 2017 sothawo.com
  */
 package com.sothawo.taboo3.mvc;
 
 import com.sothawo.taboo3.data.BookmarkEdit;
 import com.sothawo.taboo3.data.BookmarkService;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
@@ -83,7 +84,7 @@ public class BookmarkController {
      */
     @GetMapping("/edit/{id}")
     public ModelAndView showForEdit(@PathVariable String id) {
-        logger.info("delete view requested for id {}", id);
+        logger.info("edit view requested for id {}", id);
         return bookmarkService.findById(id)
                 .map(bookmark -> new ModelAndView("edit")
                         .addObject("bookmark", new BookmarkEdit(bookmark))
@@ -139,5 +140,20 @@ public class BookmarkController {
         return new ModelAndView("edit").addObject("bookmark", new BookmarkEdit())
                 .addObject("config",
                         anAddEditConfig().withCaption("add bookmark").withButtonLabel("add").withMode("add").build());
+    }
+
+    /**
+     * extracts the title for a webpage.
+     *
+     * @param loadTitleRequest
+     *         the request object conatining the url.
+     * @return the title or empty string if it cannot be loaded
+     */
+    @PostMapping("/loadtitle")
+    @ResponseBody
+    @NotNull
+    public String loadTitle(LoadTitleRequest loadTitleRequest) {
+        logger.info("load title requested for {}", loadTitleRequest);
+        return "hello";
     }
 }

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2017 HLX Touristik GmbH
+ * (c) Copyright 2017 sothawo.com
  */
 package com.sothawo.taboo3.data;
 

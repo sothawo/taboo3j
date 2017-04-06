@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2017 HLX Touristik GmbH
+ * (c) Copyright 2017 sothawo.com
  */
 package com.sothawo.taboo3.mvc;
 
@@ -50,6 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().realmName("taboo3")
                 .and()
                 .logout().logoutSuccessUrl("/login?logout")
+                .and()
+                .csrf().ignoringAntMatchers("/bookmark/loadtitle")
                 .and()
                 .authorizeRequests()
                 .regexMatchers("/(images|css|js|fonts)/.*").permitAll()
