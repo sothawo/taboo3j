@@ -43,7 +43,7 @@
                             <span class="input-group-btn"> <button
                                     class="btn btn-default glyphicon glyphicon-download-alt"
                                     type="button"
-                                    th:onclick="'$.ajax({ url: \'/bookmark/loadtitle\', type: \'post\', dataType: \'json\', data: {url: \''  + *{url} + '\'}, success: function(){} });'"/>
+                                    th:onclick="'$.ajax({ url: \'/bookmark/loadtitle\', type: \'post\', dataType: \'text\', data: {url: \''  + *{url} + '\'}, success: function(res){$(\'#title\').val(res)} });'"/>
                                 </span>
                         </div>
                     </div>
