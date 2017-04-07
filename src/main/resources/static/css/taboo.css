@@ -18,6 +18,10 @@ body {
     margin-bottom: 10px;
 }
 
+#edit-add-form .row {
+    margin-bottom: 10px;
+}
+
 #bookmarkEntry button {
     margin-top: 25px;
 }

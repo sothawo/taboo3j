@@ -39,7 +39,7 @@ public class BookmarkService {
      * delete all entries for an owner.
      *
      * @param owner
-     *         the woner
+     *         the owner
      */
     public void deleteByOwner(@NotNull String owner) {
         bookmarkRepository.delete(bookmarkRepository.findByOwner(owner));
