@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
+import static com.sothawo.taboo3.mvc.LoadTitleRequestBuilder.aLoadTitleRequest;
 
 
 /**
@@ -145,11 +146,21 @@ public class BookmarkController {
     /**
      * shows the view for adding a bookmark.
      *
+     * @param url
+     *         optional argument to preload a url, used for bookmarklet
      * @return ModelAndView for editiing with a new empty BookmarkEdit object.
      */
     @GetMapping("/add")
-    public ModelAndView showForAdd() {
-        return new ModelAndView("edit").addObject("bookmark", new BookmarkEdit())
+    public ModelAndView showForAdd(@RequestParam(required = false) String url) {
+        final BookmarkEdit bookmarkEdit = new BookmarkEdit();
+        if (null != url) {
+            bookmarkEdit.setUrl(url);
+            final ResponseEntity<String> responseEntity = loadTitle(aLoadTitleRequest().withUrl(url).build());
+            if (HttpStatus.OK.equals(responseEntity.getStatusCode())) {
+                bookmarkEdit.setTitle(responseEntity.getBody());
+            }
+        }
+        return new ModelAndView("edit").addObject("bookmark", bookmarkEdit)
                 .addObject("config",
                         anAddEditConfig().withCaption("add bookmark").withButtonLabel("add").withMode("add").build());
     }
@@ -188,5 +199,6 @@ public class BookmarkController {
                 logger.info("loading url error", e);
             }
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);    }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

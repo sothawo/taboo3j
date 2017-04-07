@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout">
 <head>
-    <title>Edit</title>
+    <title th:text="${config.caption}">Title</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" th:href="@{/css/bootstrap-3.3.7.min.css}"
           href="../static/css/bootstrap-3.3.7.min.css">
@@ -21,7 +21,7 @@
 <div layout:fragment="content">
 
     <div class="panel panel-default" id="edit-add-form">
-        <div class="panel-heading" th:text="${config.caption}">caption</div>
+        <div class="panel-heading" th:text="${config.buttonLabel}">caption</div>
         <div class="panel-body">
             <form name="edit-add-form" action="#" th:action="@{'/bookmark/edit/?mode=' + ${config.mode}}"
                   method="post"
@@ -43,7 +43,7 @@
                             <span class="input-group-btn"> <button
                                     class="btn btn-default glyphicon glyphicon-download-alt"
                                     type="button"
-                                    th:onclick="'$.ajax({ url: \'/bookmark/loadtitle\', type: \'post\', dataType: \'text\', data: {url: \''  + *{url} + '\'}, success: function(res){$(\'#title\').val(res)} });'"/>
+                                    th:onclick="'$.ajax({ url: \'/bookmark/loadtitle\', type: \'post\', dataType: \'text\', data: {url: $(\'#url\').val()}, success: function(res){$(\'#title\').val(res)} });'"/>
                                 </span>
                         </div>
                     </div>
