@@ -3,6 +3,7 @@
  */
 package com.sothawo.taboo3.mvc;
 
+import com.sothawo.taboo3.data.Bookmark;
 import com.sothawo.taboo3.data.BookmarkEdit;
 import com.sothawo.taboo3.data.BookmarkService;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +27,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
 import static com.sothawo.taboo3.mvc.LoadTitleRequestBuilder.aLoadTitleRequest;
@@ -119,7 +124,7 @@ public class BookmarkController {
      * @return ModelAndView with redirect to the main page.
      */
     @PostMapping("/edit")
-    public ModelAndView doUpdate(@AuthenticationPrincipal Principal principal, BookmarkEdit bookmarkEdit,
+    public ModelAndView doUpdate(@AuthenticationPrincipal Principal principal, @RequestBody BookmarkEdit bookmarkEdit,
                                  @RequestParam("mode") String mode) {
         final String url = bookmarkEdit.getUrl();
         if (null == url || url.isEmpty()) {
@@ -175,7 +180,7 @@ public class BookmarkController {
     @PostMapping("/loadtitle")
     @ResponseBody
     @NotNull
-    public ResponseEntity<String> loadTitle(LoadTitleRequest loadTitleRequest) {
+    public ResponseEntity<String> loadTitle(@RequestBody LoadTitleRequest loadTitleRequest) {
         String urlString = loadTitleRequest.getUrl();
         if (null != urlString && !urlString.isEmpty()) {
             if (!urlString.startsWith("http")) {
@@ -200,5 +205,27 @@ public class BookmarkController {
             }
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * inserts a whole array of bookmarks into the service. id values contained in the repository are recalculated by
+     * setting the owner to the principal.
+     *
+     * @param principal
+     *         the user calling the service
+     * @param bookmarks
+     *         the bookmarks to insert
+     * @return status code with message
+     */
+    @PostMapping("/upload")
+    @ResponseBody
+    public ResponseEntity<String> upload(@AuthenticationPrincipal Principal principal, @RequestBody Bookmark[]
+            bookmarks) {
+        logger.info("should upload {} bookmarks", bookmarks.length);
+        for (Bookmark bookmark : bookmarks) {
+            bookmark.setOwner(principal.getName());
+        }
+        bookmarkService.save(Arrays.asList(bookmarks));
+        return new ResponseEntity<^>("OK", HttpStatus.OK);
     }
 }

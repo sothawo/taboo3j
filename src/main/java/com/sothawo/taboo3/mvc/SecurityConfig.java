@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutSuccessUrl("/login?logout")
                 .and()
-                .csrf().ignoringAntMatchers("/bookmark/loadtitle")
+                .csrf().ignoringAntMatchers("/bookmark/loadtitle", "/bookmark/upload")
                 .and()
                 .authorizeRequests()
                 .regexMatchers("/(images|css|js|fonts)/.*").permitAll()
