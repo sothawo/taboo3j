@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/login")
                 .and()
+                .rememberMe().key("taboo3")
+                .and()
                 .httpBasic().realmName("taboo3")
                 .and()
                 .logout().logoutSuccessUrl("/login?logout")
@@ -57,5 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers("/(images|css|js|fonts)/.*").permitAll()
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated();
+
     }
 }
