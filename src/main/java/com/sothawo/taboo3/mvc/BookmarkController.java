@@ -28,8 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
 import static com.sothawo.taboo3.mvc.LoadTitleRequestBuilder.aLoadTitleRequest;
@@ -124,7 +122,7 @@ public class BookmarkController {
      * @return ModelAndView with redirect to the main page.
      */
     @PostMapping("/edit")
-    public ModelAndView doUpdate(@AuthenticationPrincipal Principal principal, @RequestBody BookmarkEdit bookmarkEdit,
+    public ModelAndView doUpdate(@AuthenticationPrincipal Principal principal, BookmarkEdit bookmarkEdit,
                                  @RequestParam("mode") String mode) {
         final String url = bookmarkEdit.getUrl();
         if (null == url || url.isEmpty()) {
@@ -180,7 +178,7 @@ public class BookmarkController {
     @PostMapping("/loadtitle")
     @ResponseBody
     @NotNull
-    public ResponseEntity<String> loadTitle(@RequestBody LoadTitleRequest loadTitleRequest) {
+    public ResponseEntity<String> loadTitle(LoadTitleRequest loadTitleRequest) {
         String urlString = loadTitleRequest.getUrl();
         if (null != urlString && !urlString.isEmpty()) {
             if (!urlString.startsWith("http")) {
@@ -219,13 +217,12 @@ public class BookmarkController {
      */
     @PostMapping("/upload")
     @ResponseBody
-    public ResponseEntity<String> upload(@AuthenticationPrincipal Principal principal, @RequestBody Bookmark[]
-            bookmarks) {
+    public ResponseEntity<String> upload(@AuthenticationPrincipal Principal principal, @RequestBody Bookmark[] bookmarks) {
         logger.info("should upload {} bookmarks", bookmarks.length);
         for (Bookmark bookmark : bookmarks) {
             bookmark.setOwner(principal.getName());
         }
         bookmarkService.save(Arrays.asList(bookmarks));
-        return new ResponseEntity<^>("OK", HttpStatus.OK);
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 }
