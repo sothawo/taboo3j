@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
 import static com.sothawo.taboo3.mvc.LoadTitleRequestBuilder.aLoadTitleRequest;
@@ -217,12 +218,27 @@ public class BookmarkController {
      */
     @PostMapping("/upload")
     @ResponseBody
-    public ResponseEntity<String> upload(@AuthenticationPrincipal Principal principal, @RequestBody Bookmark[] bookmarks) {
+    public ResponseEntity<String> upload(@AuthenticationPrincipal Principal principal,
+                                         @RequestBody Bookmark[] bookmarks) {
         logger.info("should upload {} bookmarks", bookmarks.length);
         for (Bookmark bookmark : bookmarks) {
             bookmark.setOwner(principal.getName());
         }
         bookmarkService.save(Arrays.asList(bookmarks));
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    /**
+     * dumps all bookmarks for a given principal.
+     *
+     * @param principal
+     *         the principal whose bookmarks are to be dumped.
+     * @return possibliy empty list of bookmarks
+     */
+    @GetMapping("/dump")
+    @ResponseBody
+    public ResponseEntity<Collection<Bookmark>> dumpBookmarks(@AuthenticationPrincipal Principal principal) {
+        final Collection<Bookmark> bookmarks = bookmarkService.findByOwner(principal.getName());
+        return new ResponseEntity<>(bookmarks, HttpStatus.OK);
     }
 }
