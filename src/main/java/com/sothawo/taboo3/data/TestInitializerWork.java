@@ -30,7 +30,7 @@ public class TestInitializerWork {
         this.bookmarkService = bookmarkService;
     }
 
-    @PostConstruct
+//    @PostConstruct
     void createBookmarksIfNecessary() {
         final String owner = "work";
         final int numBookmarks = bookmarkService.findByOwner(owner).size();
