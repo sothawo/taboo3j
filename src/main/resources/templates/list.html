@@ -43,7 +43,7 @@
                         <div class="panel-body">
                             <div th:if="${selectedTags}">
                                 <a class="nohover" th:each="tag : ${selectedTags}"
-                                   href="#" th:href="@{'/?deselectTag=' + ${tag}}">
+                                   href="#" th:href="@{/(deselectTag=${tag})}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
                                     </button>
@@ -59,7 +59,7 @@
                         <div class="panel-body">
                             <div th:if="${availableTags}">
                                 <a class="nohover" th:each="tag : ${availableTags}"
-                                   href="#" th:href="@{'/?selectTag=' + ${tag}}">
+                                   href="#" th:href="@{/(selectTag=${tag})}">
                                     <button class="btn btn-default btn-sm taglist-entry" type="button" th:text="${tag}">
                                         Tag
                                     </button>
