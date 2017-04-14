@@ -1,5 +1,8 @@
 #default application configuration
 
+taboo3:
+  users: "tmpdata/taboo3-users"
+
 security:
   user:
     name: "taboo3"
