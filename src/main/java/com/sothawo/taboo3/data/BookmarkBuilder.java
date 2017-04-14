@@ -13,7 +13,7 @@ public final class BookmarkBuilder {
     private String owner;
     private String url;
     private String title;
-    private  Collection<String> tags = new HashSet<>();
+    private Collection<String> tags = new HashSet<>();
 
     private BookmarkBuilder() {
     }
@@ -44,7 +44,10 @@ public final class BookmarkBuilder {
 
     public BookmarkBuilder addTag(String tag) {
         if (null != tag) {
-            this.tags.add(tag);
+            String trimmed = tag.trim();
+            if (!trimmed.isEmpty()) {
+                this.tags.add(trimmed);
+            }
         }
         return this;
     }

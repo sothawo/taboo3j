@@ -41,6 +41,13 @@ public class BookmarkTest {
     }
 
     @Test
+    public void emptyTagsAreSkipped() throws Exception {
+        Collection<String> tags = aBookmark().withOwner("owner").withUrl("url")
+                .addTag("ABC").addTag("").addTag(null).addTag("   ").build().getTags();
+        assertThat(tags).containsExactly("abc");
+    }
+
+    @Test
     public void ownerIsLowercase() throws Exception {
         final Bookmark bookmark = aBookmark().withOwner("OWNER").withUrl("url").build();
 
