@@ -6,7 +6,16 @@ next implementation of my tagged bookmark service, this time with:
 * Spring MVC with Thymeleaf
 * spring-data-elasticsearch as backend
 
-**This is work in progress**
+## users, passwords and roles
+
+the configuration needs to reference a file with user data when _security.basic.enabled_ is configured to _true_. The
+ configuration entry is _taboo3.users_
+ 
+This file has lines with the following content:
+
+_username:hashedPassword:role1,...,roleN_
+
+The hashedPassword can be created with the _main_ method of the Taboo3UserService class.
 
 ## bookmarklet
 

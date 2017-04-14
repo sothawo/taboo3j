@@ -3,11 +3,13 @@
  */
 package com.sothawo.taboo3.mvc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * security configuration.
@@ -17,6 +19,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final Taboo3UserService userService;
+
+    @Autowired
+    public SecurityConfig(Taboo3UserService userService) {
+        this.userService = userService;
+    }
+
     /**
      * sets up two users in an inmemory repository.
      *
@@ -27,8 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("peter").password("").roles("USER", "ACTUATOR");
+        auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     /**
