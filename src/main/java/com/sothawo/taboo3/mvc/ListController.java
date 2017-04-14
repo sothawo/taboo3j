@@ -112,7 +112,8 @@ public class ListController {
     @PostMapping("/searchText")
     public ModelAndView searchText(SearchData searchData) {
         if (null != searchData && null != searchData.getText()) {
-            final String searchText = searchData.getText();
+            // replace blank with asterisk
+            final String searchText = searchData.getText().trim().replaceAll("\\W+", "*");
             logger.info("setting search text to {}", searchText);
             sessionStore.setSearchText(searchText);
         }
