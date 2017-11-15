@@ -21,6 +21,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -88,7 +89,11 @@ public class ListController {
 
                 // get all available tags
                 availableTags.addAll(bookmarkService.findAllTagsByOwner(owner)
-                        .stream().sorted().collect(Collectors.toList()));
+                        .stream()
+                        .filter(tag -> !Objects.isNull(tag))
+                        .filter(tag -> !tag.isEmpty())
+                        .sorted()
+                        .collect(Collectors.toList()));
             }
 
             // set all objects, eventually to empty lists
