@@ -66,7 +66,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers("/(images|css|js|fonts)/.*").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/health").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling().accessDeniedPage("/login")
+        ;
 
     }
 }
