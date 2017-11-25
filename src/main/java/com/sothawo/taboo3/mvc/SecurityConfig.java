@@ -41,8 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * configure http basic auth with a custom login page. Allow the static assets and the login page, restrict all
-     * other.
+     * configure http basic auth with a custom login page.
      *
      * @param http
      *         the security to configure

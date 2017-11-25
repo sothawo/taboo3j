@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ForkJoinPool;
 
 import static com.sothawo.taboo3.mvc.AddEditConfigBuilder.anAddEditConfig;
 import static com.sothawo.taboo3.mvc.LoadTitleRequestBuilder.aLoadTitleRequest;
@@ -51,6 +52,7 @@ public class BookmarkController {
      */
     private static final String JSOUP_USER_AGENT =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36";
+    private static final String TAG_TO_VALIDATE = "_to_validate";
 
     private final BookmarkService bookmarkService;
 
@@ -60,8 +62,8 @@ public class BookmarkController {
     }
 
     /**
-     * display the given Bookmark and request deletion confirmation. If no bookmarks is found, the user is redirected
-     * to the bookmark list size.
+     * display the given Bookmark and request deletion confirmation. If no bookmarks is found, the user is redirected to
+     * the bookmark list size.
      *
      * @return ModelAndView for the confirm page.
      */
@@ -240,5 +242,25 @@ public class BookmarkController {
     public ResponseEntity<Collection<Bookmark>> dumpBookmarks(@AuthenticationPrincipal Principal principal) {
         final Collection<Bookmark> bookmarks = bookmarkService.findByOwner(principal.getName());
         return new ResponseEntity<>(bookmarks, HttpStatus.OK);
+    }
+
+    /**
+     * adds the tag {@link #TAG_TO_VALIDATE} to each bookmarks
+     *
+     * @param principal
+     *         the principal whose bookmarks are to be marked.
+     * @return accepted status
+     */
+    @GetMapping("/markForValidate")
+    @ResponseBody
+    public ResponseEntity<String> markForValidate(@AuthenticationPrincipal Principal principal) {
+        ForkJoinPool.commonPool().execute(() -> {
+            final Collection<Bookmark> bookmarks = bookmarkService.findByOwner(principal.getName());
+            bookmarks.forEach(bookmark -> {
+                bookmark.addTag(TAG_TO_VALIDATE);
+                bookmarkService.save(bookmark);
+            });
+        });
+        return new ResponseEntity<>("started to mark", HttpStatus.ACCEPTED);
     }
 }
