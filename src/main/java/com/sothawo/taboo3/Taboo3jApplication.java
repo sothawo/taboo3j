@@ -10,3 +10,4 @@ public class Taboo3jApplication {
         SpringApplication.run(Taboo3jApplication.class, args);
     }
 }
+
