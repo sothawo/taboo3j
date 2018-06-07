@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -169,8 +170,10 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByTags(@NotNull Collection<String> tags) {
+        final List<String> lowerCaseTags = tags.stream().map(String::toLowerCase).collect(Collectors.toList());
         return bookmarkRepository.findByTagsIn(tags).stream()
-                .filter(bookmark -> bookmark.getTags().containsAll(tags))
+                .filter(bookmark -> bookmark.getTags().stream().map(String::toLowerCase).collect(Collectors.toList())
+                        .containsAll(lowerCaseTags))
                 .collect(Collectors.toList());
     }
 
@@ -183,8 +186,10 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByOwnerAndTags(@NotNull String owner, @NotNull Collection<String> tags) {
-        return bookmarkRepository.findByOwnerAndTagsIn(owner, tags).stream().
-                filter(bookmark -> bookmark.getTags().containsAll(tags))
+        final List<String> lowerCaseTags = tags.stream().map(String::toLowerCase).collect(Collectors.toList());
+        return bookmarkRepository.findByOwnerAndTagsIn(owner, tags).stream()
+                .filter(bookmark -> bookmark.getTags().stream().map(String::toLowerCase).collect(Collectors.toList())
+                        .containsAll(lowerCaseTags))
                 .collect(Collectors.toList());
     }
 
@@ -199,8 +204,10 @@ public class BookmarkService {
      */
     @NotNull
     public Collection<Bookmark> findByTitleAndTags(@NotNull String text, @NotNull Collection<String> tags) {
+        final List<String> lowerCaseTags = tags.stream().map(String::toLowerCase).collect(Collectors.toList());
         return bookmarkRepository.findByTitleContainingAndTagsIn(text, tags).stream()
-                .filter(bookmark -> bookmark.getTags().containsAll(tags))
+                .filter(bookmark -> bookmark.getTags().stream().map(String::toLowerCase).collect(Collectors.toList())
+                        .containsAll(lowerCaseTags))
                 .collect(Collectors.toList());
     }
 
@@ -218,8 +225,10 @@ public class BookmarkService {
     @NotNull
     public Collection<Bookmark> findByOwnerAndTitleAndTags(@NotNull String owner, @NotNull String text,
                                                            @NotNull Collection<String> tags) {
+        final List<String> lowerCaseTags = tags.stream().map(String::toLowerCase).collect(Collectors.toList());
         return bookmarkRepository.findByOwnerAndTitleContainingAndTagsIn(owner, text, tags).stream()
-                .filter(bookmark -> bookmark.getTags().containsAll(tags))
+                .filter(bookmark -> bookmark.getTags().stream().map(String::toLowerCase).collect(Collectors.toList())
+                        .containsAll(lowerCaseTags))
                 .collect(Collectors.toList());
     }
 

@@ -223,7 +223,7 @@ public class BookmarkServiceTest {
         Bookmark bookmark3 = aBookmark().withOwner("owner3").withUrl("url3").withTitle("say hello").build();
         bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        Collection<Bookmark> bookmarks = bookmarkService.findByTitle("hello");
+        Collection<Bookmark> bookmarks = bookmarkService.findByTitle("hEllo");
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1, bookmark3);
     }
@@ -235,7 +235,7 @@ public class BookmarkServiceTest {
         Bookmark bookmark3 = aBookmark().withOwner("owner3").withUrl("url3").withTitle("say hello").build();
         bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        Collection<Bookmark> bookmarks = bookmarkService.findByOwnerAndTitle("owner1", "hello");
+        Collection<Bookmark> bookmarks = bookmarkService.findByOwnerAndTitle("owner1", "helLo");
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
@@ -249,13 +249,13 @@ public class BookmarkServiceTest {
         Bookmark bookmark3 = aBookmark().withOwner("owner").withUrl("url3").withTitle("title3").addTag("tag3").build();
         bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
-        Collection<Bookmark> bookmarks = bookmarkService.findByTags(Arrays.asList("tag2", "common"));
+        Collection<Bookmark> bookmarks = bookmarkService.findByTags(Arrays.asList("tAg2", "common"));
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
     }
 
     @Test
-    public void findBookmarksWithOwnerAndTagsAnd() throws Exception {
+    public void findBookmarksWithOwnerAndTags() throws Exception {
         Bookmark bookmark1 = aBookmark().withOwner("owner1").withUrl("url1").withTitle("title1").addTag("tag1").addTag
                 ("common").build();
         Bookmark bookmark2 = aBookmark().withOwner("owner1").withUrl("url2").withTitle("title2").addTag("tag2").addTag
@@ -271,7 +271,7 @@ public class BookmarkServiceTest {
         Collection<Bookmark> bookmarks = bookmarkService.findByOwnerAndTags("owner1", Arrays.asList("tag2", "common"));
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark2);
 
-        bookmarks = bookmarkService.findByOwnerAndTags("owner2", Arrays.asList("tag2", "common"));
+        bookmarks = bookmarkService.findByOwnerAndTags("Owner2", Arrays.asList("tag2", "CommOn"));
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark5);
     }
 
@@ -287,7 +287,7 @@ public class BookmarkServiceTest {
         bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3));
 
         Collection<Bookmark> bookmarks =
-                bookmarkService.findByTitleAndTags("hello", Collections.singletonList("tag1"));
+                bookmarkService.findByTitleAndTags("heLlo", Collections.singletonList("tAg1"));
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
@@ -312,7 +312,7 @@ public class BookmarkServiceTest {
         bookmarkService.save(Arrays.asList(bookmark1, bookmark2, bookmark3, bookmark4, bookmark5, bookmark6));
 
         Collection<Bookmark> bookmarks =
-                bookmarkService.findByOwnerAndTitleAndTags("owner", "hello", Collections.singletonList("tag1"));
+                bookmarkService.findByOwnerAndTitleAndTags("owNer", "helLo", Collections.singletonList("tAg1"));
 
         assertThat(bookmarks).containsExactlyInAnyOrder(bookmark1);
     }
