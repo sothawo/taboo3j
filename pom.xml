@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.sothawo</groupId>
-	<artifactId>taboo3j</artifactId>
+	<artifactId>t2boo3j</artifactId>
 	<version>1.1.0</version>
 	<packaging>jar</packaging>
 
