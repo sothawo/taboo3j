@@ -29,7 +29,7 @@
 
 		<version.assertj>3.10.0</version.assertj>
 		<version.jna>4.5.1</version.jna>
-		<version.jsoup>1.11.3</version.jsoup>
+		<version.jsoup>1.14.2</version.jsoup>
 	</properties>
 
 	<dependencies>
